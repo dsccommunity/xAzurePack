@@ -15,34 +15,7 @@ This module includes 8 DSC resources that automate provisioning of resources in 
 *   **xAzurePackRelyingParty**: for setting Azure Pack relying party settings
 *   **xAzurePackResourceProvider**: for registering and configuring Azure Pack resource providers
 
-**All of the resources in the DSC Resource Kit are provided AS IS, and are not supported through any Microsoft standard support program or service.
-The ""x" in xAzure stands for experimental**, which means that these resources will be **fix forward** and monitored by the module owner(s).
-
-Please leave comments, feature requests, and bug reports in the Q & A tab for this module.
-
-For more information about Windows PowerShell Desired State Configuration, check out the blog posts on the [PowerShell Blog](http://blogs.msdn.com/b/powershell/) ([this](http://blogs.msdn.com/b/powershell/archive/2013/11/01/configuration-in-a-devops-world-windows-powershell-desired-state-configuration.aspx) is a good starting point).
-There are also great community resources, such as [PowerShell.org](http://powershell.org/wp/tag/dsc/), or [PowerShell Magazine](http://www.powershellmagazine.com/tag/dsc/).
-For more information on the DSC Resource Kit, check out [this blog post](http://go.microsoft.com/fwlink/?LinkID=389546).
-
-## Installation
-
-To install **xAzurePack** module
-
-*   If you are using WMF4 / PowerShell Version 4: Unzip the content under $env:ProgramFiles\WindowsPowerShell\Modules folder
-*   If you are using WMF5 Preview: From an elevated PowerShell session run ‘Install-Module xAzurePack’
-
-To confirm installation:
-
-*   Run **Get-DSCResource** to see that **xAzurePackSetup**, **xAzurePackDatabaseSetting**, and **xAzurePackResourceProvider** are among the DSC Resources listed
-
-## Requirements
-
-This module requires at least the latest version of PowerShell (v4.0, which ships in Windows 8.1 or Windows Server 2012R2).
-To easily use PowerShell 4.0 on older operating systems, [install WMF 4.0](http://www.microsoft.com/en-us/download/details.aspx?id=40855).
-Please read the installation instructions that are present on both the download page and the release notes for WMF 4.0.
-
-
-## Details
+## Resources
 
 ###xAzurePackSetup
 
@@ -230,9 +203,12 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 
 ## Versions
 
-1.0.0.0
+### 1.1.4.0
+* Update increased timeout for setup process to start to 60 seconds. 
 
- Initial release with the following resources 
+### 1.0.0.0
+
+Initial release with the following resources 
 *   **xAzurePackSetup** 
 *   **xAzureQuickVM** 
 *   **xAzurePackAdmin**

@@ -8,4 +8,3 @@ class MSFT_xAzurePackDatabaseSetting : OMI_BaseResource
     [Required, Description("Database server for the Azure Pack databases.")] String SQLServer;
     [Write, Description("Database instance for the Azure Pack databases.")] String SQLInstance;
 };
-

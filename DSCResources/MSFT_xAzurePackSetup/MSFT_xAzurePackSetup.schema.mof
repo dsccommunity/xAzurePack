@@ -12,4 +12,3 @@ class MSFT_xAzurePackSetup : OMI_BaseResource
     [Write, EmbeddedInstance("MSFT_Credential"), Description("SQL user to be used to create the database if the SetupCredential cannot be used.")] String dbUser;
     [Write, Description("Enable Customer Experience Improvement Program.")] String EnableCeip;
 };
-

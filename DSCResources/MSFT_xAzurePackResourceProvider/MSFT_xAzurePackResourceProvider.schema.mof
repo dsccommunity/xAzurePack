@@ -38,4 +38,3 @@ class MSFT_xAzurePackResourceProvider : OMI_BaseResource
     [Write, Description("Specifies the time interval at which the management service polls the resource provider for subscription status updates.")] String SubscriptionStatusPollingInterval;
     [Write, Description("Specifies the type of the resource provider."), ValueMap{"Standard","UsageProvider","CloudServiceProvider"}, Values{"Standard","UsageProvider","CloudServiceProvider"}] String Type;
 };
-
