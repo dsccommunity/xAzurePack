@@ -629,4 +629,3 @@ function GetWAPFeatures
 
 
 Export-ModuleMember -Function *-TargetResource
-

@@ -370,4 +370,3 @@ function GetComponentInstalled
 
 
 Export-ModuleMember -Function *-TargetResource
-
