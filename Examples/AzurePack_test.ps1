@@ -1,6 +1,6 @@
 ﻿#requires -Version 5
 
-Configuration AzurePack
+Configuration AzurePack_test
 {
     Import-DscResource -Module xSQLServer
     Import-DscResource -Module xCredSSP
@@ -34,7 +34,7 @@ Configuration AzurePack
         # Set LCM to reboot if needed
         LocalConfigurationManager
         {
-            DebugMode = $true
+            DebugMode = 'All'
             RebootNodeIfNeeded = $true
         }
 
@@ -84,7 +84,6 @@ Configuration AzurePack
             {
                 Ensure = "Present"
                 Name = "NET-Framework-Core"
-                Source = $Node.SourcePath + "\WindowsServer2012R2\sources\sxs"
             }
         }
 
@@ -262,18 +261,35 @@ Configuration AzurePack
                     {
                         DependsOn = "[WindowsFeature]NET-Framework-Core"
                         SourcePath = $Node.SourcePath
+                        SourceFolder = 'SQL2012\Ent'
                         SetupCredential = $Node.InstallerServiceAccount
+                        UpdateSource = '.\MU'
                         InstanceName = $SQLInstanceName
                         Features = $Features
                         SQLSysAdminAccounts = $Node.AdminAccount
                         SecurityMode = "SQL"
                         SAPwd = $Node.SQLSA
+                        InstallSharedDir = 'C:\Program Files\Microsoft SQL Server'
+                        InstallSharedWOWDir = 'C:\Program Files (x86)\Microsoft SQL Server'
+                        InstanceDir = 'D:\Microsoft SQL Server'
+                        InstallSQLDataDir = 'D:\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\Data'
+                        SQLUserDBDir = 'D:\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\Data'
+                        SQLUserDBLogDir = 'D:\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\Data'
+                        SQLTempDBDir = 'D:\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\Data'
+                        SQLTempDBLogDir = 'D:\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\Data'
+                        SQLBackupDir = 'D:\Microsoft SQL Server\MSSQL11.MSSQLSERVER\MSSQL\Data'
+                        ASDataDir = 'D:\Microsoft SQL Server\MSAS11.MSSQLSERVER\OLAP\Data'
+                        ASLogDir = 'D:\Microsoft SQL Server\MSAS11.MSSQLSERVER\OLAP\Log'
+                        ASBackupDir = 'D:\Microsoft SQL Server\MSAS11.MSSQLSERVER\OLAP\Backup'
+                        ASTempDir = 'D:\Microsoft SQL Server\MSAS11.MSSQLSERVER\OLAP\Temp'
+                        ASConfigDir = 'D:\Microsoft SQL Server\MSAS11.MSSQLSERVER\OLAP\Config'
                     }
 
                     xSqlServerFirewall ($Node.NodeName + $SQLInstanceName)
                     {
                         DependsOn = ("[xSqlServerSetup]" + $Node.NodeName + $SQLInstanceName)
                         SourcePath = $Node.SourcePath
+                        SourceFolder = 'SQL2012\Ent'
                         InstanceName = $SQLInstanceName
                         Features = $Features
                     }
@@ -288,6 +304,8 @@ Configuration AzurePack
             {
                 DependsOn = "[WindowsFeature]NET-Framework-Core"
                 SourcePath = $Node.SourcePath
+                SourceFolder = 'SQL2012\Ent'
+                UpdateSource = '.\MU'
                 SetupCredential = $Node.InstallerServiceAccount
                 InstanceName = "NULL"
                 Features = "SSMS,ADV_SSMS"
@@ -314,7 +332,7 @@ Configuration AzurePack
             }
             else
             {
-                $ASPNETWebPages2 = "\Prerequisites\ASPNETWebPages2\AspNetWebPages2Setup.exe"
+                $ASPNETWebPages2 = "\WAP\Prerequisites\ASPNETWebPages2\AspNetWebPages2Setup.exe"
             }
             Package "ASPNETWebPages2"
             {
@@ -333,7 +351,7 @@ Configuration AzurePack
             }
             else
             {
-                $ASPNETMVC4 = "\Prerequisites\ASPNETMVC4\AspNetMVC4Setup.exe"
+                $ASPNETMVC4 = "\WAP\Prerequisites\ASPNETMVC4\AspNetMVC4Setup.exe"
             }
             Package "ASPNETMVC4"
             {
@@ -358,7 +376,7 @@ Configuration AzurePack
             }
             else
             {
-                $MySQLConnectorNet654 = "\Prerequisites\MySQLConnectorNet654\mysql-connector-net-6.5.4.msi"
+                $MySQLConnectorNet654 = "\WAP\Prerequisites\MySQLConnectorNet654\mysql-connector-net-6.5.4.msi"
             }
             Package "MySQLConnectorNet654"
             {
@@ -386,7 +404,7 @@ Configuration AzurePack
             }
             else
             {
-                $URLRewrite2 = "\Prerequisites\URLRewrite2\rewrite_amd64_en-US.msi"
+                $URLRewrite2 = "\WAP\Prerequisites\URLRewrite2\rewrite_amd64_en-US.msi"
             }
             Package "URLRewrite2"
             {
@@ -408,7 +426,9 @@ Configuration AzurePack
             {
                 Role = "Admin API"
                 Action = "Install"
+                dbUser = $Node.SQLSA
                 SourcePath = $Node.SourcePath
+                SourceFolder = 'WAP\Installer'
                 SetupCredential = $Node.InstallerServiceAccount
             }
 
@@ -429,9 +449,9 @@ Configuration AzurePack
                     {
                         NodeName = $WindowsAzurePack2013DatabaseServer
                         ResourceName = ("[xSqlServerFirewall]" + $WindowsAzurePack2013DatabaseServer + $WindowsAzurePack2013DatabaseInstance)
-                        Credential = $Node.InstallerServiceAccount
-                        RetryCount = 720
-                        RetryIntervalSec = 5
+                        PsDscRunAsCredential = $Node.InstallerServiceAccount
+                        RetryCount = 2000
+                        RetryIntervalSec = 30
                     }
                     $DependsOn = @("[WaitForAll]WAPDB")
                 }
@@ -447,7 +467,9 @@ Configuration AzurePack
                     DependsOn = $DependsOn
                     Role = "Admin API"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -515,9 +537,9 @@ Configuration AzurePack
                 {
                     NodeName = $WindowsAzurePack2013AdminAPIServers[0]
                     ResourceName = "[xAzurePackSetup]AdminAPIInitialize"
-                    Credential = $Node.InstallerServiceAccount
+                    PsDscRunAsCredential = $Node.InstallerServiceAccount
                     RetryCount = 720
-                    RetryIntervalSec = 5
+                    RetryIntervalSec = 10
                 }
 
                 xAzurePackSetup "AdminAPIInitialize"
@@ -530,7 +552,9 @@ Configuration AzurePack
                     )
                     Role = "Admin API"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -547,7 +571,9 @@ Configuration AzurePack
             {
                 Role = "Tenant API"
                 Action = "Install"
+                dbUser = $Node.SQLSA
                 SourcePath = $Node.SourcePath
+                SourceFolder = 'WAP\Installer'
                 SetupCredential = $Node.InstallerServiceAccount
             }
 
@@ -568,9 +594,9 @@ Configuration AzurePack
                     {
                         NodeName = $WindowsAzurePack2013AdminAPIServers[0]
                         ResourceName = ("[xAzurePackSetup]AdminAPIInitialize")
-                        Credential = $Node.InstallerServiceAccount
+                        PsDscRunAsCredential = $Node.InstallerServiceAccount
                         RetryCount = 720
-                        RetryIntervalSec = 5
+                        RetryIntervalSec = 10
                     }
                     $DependsOn = @("[WaitForAll]AdminAPI")
                 }
@@ -586,7 +612,9 @@ Configuration AzurePack
                     DependsOn = $DependsOn
                     Role = "Tenant API"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -632,9 +660,9 @@ Configuration AzurePack
                 {
                     NodeName = $WindowsAzurePack2013TenantAPIServers[0]
                     ResourceName = "[xAzurePackSetup]TenantAPIInitialize"
-                    Credential = $Node.InstallerServiceAccount
+                    PsDscRunAsCredential = $Node.InstallerServiceAccount
                     RetryCount = 720
-                    RetryIntervalSec = 5
+                    RetryIntervalSec = 10
                 }
 
                 xAzurePackSetup "TenantAPIInitialize"
@@ -647,7 +675,9 @@ Configuration AzurePack
                     )
                     Role = "Tenant API"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -664,7 +694,9 @@ Configuration AzurePack
             {
                 Role = "Tenant Public API"
                 Action = "Install"
+                dbUser = $Node.SQLSA
                 SourcePath = $Node.SourcePath
+                SourceFolder = 'WAP\Installer'
                 SetupCredential = $Node.InstallerServiceAccount
             }
 
@@ -685,9 +717,9 @@ Configuration AzurePack
                     {
                         NodeName = $WindowsAzurePack2013TenantAPIServers[0]
                         ResourceName = ("[xAzurePackSetup]TenantAPIInitialize")
-                        Credential = $Node.InstallerServiceAccount
-                        RetryCount = 720
-                        RetryIntervalSec = 5
+                        PsDscRunAsCredential = $Node.InstallerServiceAccount
+                        RetryCount = 2000
+                        RetryIntervalSec = 30
                     }
                     $DependsOn = @("[WaitForAll]TenantAPI")
                 }
@@ -703,7 +735,9 @@ Configuration AzurePack
                     DependsOn = $DependsOn
                     Role = "Tenant Public API"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -738,9 +772,9 @@ Configuration AzurePack
                 {
                     NodeName = $WindowsAzurePack2013TenantPublicAPIServers[0]
                     ResourceName = "[xAzurePackSetup]TenantPublicAPIInitialize"
-                    Credential = $Node.InstallerServiceAccount
+                    PsDscRunAsCredential = $Node.InstallerServiceAccount
                     RetryCount = 720
-                    RetryIntervalSec = 5
+                    RetryIntervalSec = 10
                 }
 
                 xAzurePackSetup "TenantPublicAPIInitialize"
@@ -753,7 +787,9 @@ Configuration AzurePack
                     )
                     Role = "Tenant Public API"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -770,7 +806,9 @@ Configuration AzurePack
             {
                 Role = "SQL Server Extension"
                 Action = "Install"
+                dbUser = $Node.SQLSA
                 SourcePath = $Node.SourcePath
+                SourceFolder = 'WAP\Installer'
                 SetupCredential = $Node.InstallerServiceAccount
             }
 
@@ -791,9 +829,9 @@ Configuration AzurePack
                     {
                         NodeName = $WindowsAzurePack2013AdminAPIServers[0]
                         ResourceName = ("[xAzurePackSetup]AdminAPIInitialize")
-                        Credential = $Node.InstallerServiceAccount
+                        PsDscRunAsCredential = $Node.InstallerServiceAccount
                         RetryCount = 720
-                        RetryIntervalSec = 5
+                        RetryIntervalSec = 10
                     }
                     $DependsOn = @("[WaitForAll]AdminAPI")
                 }
@@ -809,7 +847,9 @@ Configuration AzurePack
                     DependsOn = $DependsOn
                     Role = "SQL Server Extension"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -821,9 +861,9 @@ Configuration AzurePack
                 {
                     NodeName = $WindowsAzurePack2013SQLServerExtensionServers[0]
                     ResourceName = "[xAzurePackSetup]SQLServerExtensionInitialize"
-                    Credential = $Node.InstallerServiceAccount
+                    PsDscRunAsCredential = $Node.InstallerServiceAccount
                     RetryCount = 720
-                    RetryIntervalSec = 5
+                    RetryIntervalSec = 10
                 }
 
                 xAzurePackSetup "SQLServerExtensionInitialize"
@@ -836,7 +876,9 @@ Configuration AzurePack
                     )
                     Role = "SQL Server Extension"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -853,7 +895,9 @@ Configuration AzurePack
             {
                 Role = "MySQL Extension"
                 Action = "Install"
+                dbUser = $Node.SQLSA
                 SourcePath = $Node.SourcePath
+                SourceFolder = 'WAP\Installer'
                 SetupCredential = $Node.InstallerServiceAccount
             }
 
@@ -874,9 +918,9 @@ Configuration AzurePack
                     {
                         NodeName = $WindowsAzurePack2013AdminAPIServers[0]
                         ResourceName = ("[xAzurePackSetup]AdminAPIInitialize")
-                        Credential = $Node.InstallerServiceAccount
+                        PsDscRunAsCredential = $Node.InstallerServiceAccount
                         RetryCount = 720
-                        RetryIntervalSec = 5
+                        RetryIntervalSec = 10
                     }
                     $DependsOn = @("[WaitForAll]AdminAPI")
                 }
@@ -892,7 +936,9 @@ Configuration AzurePack
                     DependsOn = $DependsOn
                     Role = "MySQL Extension"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -904,9 +950,9 @@ Configuration AzurePack
                 {
                     NodeName = $WindowsAzurePack2013MySQLExtensionServers[0]
                     ResourceName = "[xAzurePackSetup]MySQLExtensionInitialize"
-                    Credential = $Node.InstallerServiceAccount
+                    PsDscRunAsCredential = $Node.InstallerServiceAccount
                     RetryCount = 720
-                    RetryIntervalSec = 5
+                    RetryIntervalSec = 10
                 }
 
                 xAzurePackSetup "MySQLExtensionInitialize"
@@ -919,7 +965,9 @@ Configuration AzurePack
                     )
                     Role = "MySQL Extension"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -936,7 +984,9 @@ Configuration AzurePack
             {
                 Role = "Admin Site"
                 Action = "Install"
+                dbUser = $Node.SQLSA
                 SourcePath = $Node.SourcePath
+                SourceFolder = 'WAP\Installer'
                 SetupCredential = $Node.InstallerServiceAccount
             }
 
@@ -957,9 +1007,9 @@ Configuration AzurePack
                     {
                         NodeName = $WindowsAzurePack2013AdminAPIServers[0]
                         ResourceName = ("[xAzurePackSetup]AdminAPIInitialize")
-                        Credential = $Node.InstallerServiceAccount
+                        PsDscRunAsCredential = $Node.InstallerServiceAccount
                         RetryCount = 720
-                        RetryIntervalSec = 5
+                        RetryIntervalSec = 10
                     }
                     $DependsOn = @("[WaitForAll]AdminAPI")
                 }
@@ -975,7 +1025,9 @@ Configuration AzurePack
                     DependsOn = $DependsOn
                     Role = "Admin Site"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -1010,9 +1062,9 @@ Configuration AzurePack
                 {
                     NodeName = $WindowsAzurePack2013AdminSiteServers[0]
                     ResourceName = "[xAzurePackSetup]AdminSiteInitialize"
-                    Credential = $Node.InstallerServiceAccount
+                    PsDscRunAsCredential = $Node.InstallerServiceAccount
                     RetryCount = 720
-                    RetryIntervalSec = 5
+                    RetryIntervalSec = 10
                 }
 
                 xAzurePackSetup "AdminSiteInitialize"
@@ -1025,7 +1077,9 @@ Configuration AzurePack
                     )
                     Role = "Admin Site"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -1042,7 +1096,9 @@ Configuration AzurePack
             {
                 Role = "Admin Authentication Site"
                 Action = "Install"
+                dbUser = $Node.SQLSA
                 SourcePath = $Node.SourcePath
+                SourceFolder = 'WAP\Installer'
                 SetupCredential = $Node.InstallerServiceAccount
             }
 
@@ -1063,9 +1119,9 @@ Configuration AzurePack
                     {
                         NodeName = $WindowsAzurePack2013AdminAPIServers[0]
                         ResourceName = ("[xAzurePackSetup]AdminAPIInitialize")
-                        Credential = $Node.InstallerServiceAccount
+                        PsDscRunAsCredential = $Node.InstallerServiceAccount
                         RetryCount = 720
-                        RetryIntervalSec = 5
+                        RetryIntervalSec = 10
                     }
                     $DependsOn = @("[WaitForAll]AdminAPI")
                 }
@@ -1081,7 +1137,9 @@ Configuration AzurePack
                     DependsOn = $DependsOn
                     Role = "Admin Authentication Site"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -1128,9 +1186,9 @@ Configuration AzurePack
                 {
                     NodeName = $WindowsAzurePack2013AdminAuthenticationSiteServers[0]
                     ResourceName = "[xAzurePackSetup]AdminAuthenticationSiteInitialize"
-                    Credential = $Node.InstallerServiceAccount
+                    PsDscRunAsCredential = $Node.InstallerServiceAccount
                     RetryCount = 720
-                    RetryIntervalSec = 5
+                    RetryIntervalSec = 10
                 }
 
                 xAzurePackSetup "AdminAuthenticationSiteInitialize"
@@ -1143,7 +1201,9 @@ Configuration AzurePack
                     )
                     Role = "Admin Authentication Site"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -1160,7 +1220,9 @@ Configuration AzurePack
             {
                 Role = "Tenant Site"
                 Action = "Install"
+                dbUser = $Node.SQLSA
                 SourcePath = $Node.SourcePath
+                SourceFolder = 'WAP\Installer'
                 SetupCredential = $Node.InstallerServiceAccount
             }
 
@@ -1181,9 +1243,9 @@ Configuration AzurePack
                     {
                         NodeName = $WindowsAzurePack2013TenantPublicAPIServers[0]
                         ResourceName = ("[xAzurePackSetup]TenantPublicAPIInitialize")
-                        Credential = $Node.InstallerServiceAccount
+                        PsDscRunAsCredential = $Node.InstallerServiceAccount
                         RetryCount = 720
-                        RetryIntervalSec = 5
+                        RetryIntervalSec = 10
                     }
                     $DependsOn = @("[WaitForAll]AdminAPI")
                 }
@@ -1199,7 +1261,9 @@ Configuration AzurePack
                     DependsOn = $DependsOn
                     Role = "Tenant Site"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -1234,9 +1298,9 @@ Configuration AzurePack
                 {
                     NodeName = $WindowsAzurePack2013TenantSiteServers[0]
                     ResourceName = "[xAzurePackSetup]TenantSiteInitialize"
-                    Credential = $Node.InstallerServiceAccount
+                    PsDscRunAsCredential = $Node.InstallerServiceAccount
                     RetryCount = 720
-                    RetryIntervalSec = 5
+                    RetryIntervalSec = 10
                 }
 
                 xAzurePackSetup "TenantSiteInitialize"
@@ -1249,7 +1313,9 @@ Configuration AzurePack
                     )
                     Role = "Tenant Site"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -1266,7 +1332,9 @@ Configuration AzurePack
             {
                 Role = "Tenant Authentication Site"
                 Action = "Install"
+                dbUser = $Node.SQLSA
                 SourcePath = $Node.SourcePath
+                SourceFolder = 'WAP\Installer'
                 SetupCredential = $Node.InstallerServiceAccount
             }
 
@@ -1287,9 +1355,9 @@ Configuration AzurePack
                     {
                         NodeName = $WindowsAzurePack2013TenantPublicAPIServers[0]
                         ResourceName = ("[xAzurePackSetup]TenantPublicAPIInitialize")
-                        Credential = $Node.InstallerServiceAccount
+                        PsDscRunAsCredential = $Node.InstallerServiceAccount
                         RetryCount = 720
-                        RetryIntervalSec = 5
+                        RetryIntervalSec = 10
                     }
                     $DependsOn = @("[WaitForAll]AdminAPI")
                 }
@@ -1305,7 +1373,9 @@ Configuration AzurePack
                     DependsOn = $DependsOn
                     Role = "Tenant Authentication Site"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -1340,9 +1410,9 @@ Configuration AzurePack
                 {
                     NodeName = $WindowsAzurePack2013TenantAuthenticationSiteServers[0]
                     ResourceName = "[xAzurePackSetup]TenantAuthenticationSiteInitialize"
-                    Credential = $Node.InstallerServiceAccount
+                    PsDscRunAsCredential = $Node.InstallerServiceAccount
                     RetryCount = 720
-                    RetryIntervalSec = 5
+                    RetryIntervalSec = 10
                 }
 
                 xAzurePackSetup "TenantAuthenticationSiteInitialize"
@@ -1355,7 +1425,9 @@ Configuration AzurePack
                     )
                     Role = "Tenant Authentication Site"
                     Action = "Initialize"
+                    dbUser = $Node.SQLSA
                     SourcePath = $Node.SourcePath
+                    SourceFolder = 'WAP\Installer'
                     SetupCredential = $Node.InstallerServiceAccount
                     SQLServer = $WindowsAzurePack2013DatabaseServer
                     SQLInstance = $WindowsAzurePack2013DatabaseInstance
@@ -1430,9 +1502,9 @@ Configuration AzurePack
                     {
                         NodeName = $WindowsAzurePack2013AdminAuthenticationSiteServers[0]
                         ResourceName = $Res
-                        Credential = $Node.InstallerServiceAccount
+                        PsDscRunAsCredential = $Node.InstallerServiceAccount
                         RetryCount = 720
-                        RetryIntervalSec = 5
+                        RetryIntervalSec = 10
                     }
                     $DependsOn = @("[WaitForAll]WAPAAS")
                 }
@@ -1604,9 +1676,8 @@ Configuration AzurePack
     }
 }
 
-$SecurePassword = ConvertTo-SecureString -String "Pass@word1" -AsPlainText -Force
-$InstallerServiceAccount = New-Object System.Management.Automation.PSCredential ("CONTOSO\!Installer", $SecurePassword)
-$SQLSA = New-Object System.Management.Automation.PSCredential ("sa", $SecurePassword)
+$InstallerServiceAccount = New-Object System.Management.Automation.PSCredential ("WAPDEV\DBraver-a", $InstallerPassword)
+$SQLSA = New-Object System.Management.Automation.PSCredential ("sa", $ServerAdminPassword)
 
 $ConfigurationData = @{
     AllNodes = @(
@@ -1614,28 +1685,38 @@ $ConfigurationData = @{
             NodeName = "*"
             PSDscAllowPlainTextPassword = $true
 
-            SourcePath = "\\RD01\Installer"
+            SourcePath = '\\win2760vm\install\01-MS'
             InstallerServiceAccount = $InstallerServiceAccount
 
-            AdminAccount = "CONTOSO\Administrator"
+            AdminAccount = "WAPDEV\DBraver-a"
             SQLSA = $SQLSA
-            AzurePackAdmin = "CONTOSO\Administrator"
+            AzurePackAdmin = "WAPDEV\DBraver-a"
 
-            AzurePackAdminAPIFQDN = "adminapi.contoso.com"
-            AzurePackTenantAPIFQDN = "tenantapi.contoso.com"
-            AzurePackTenantPublicAPIFQDN = "tenantpublicapi.contoso.com"
+            AzurePackAdminAPIFQDN = "WIN2764VM.wapdev.local"
+            AzurePackTenantAPIFQDN = "WIN2764VM.wapdev.local"
+            AzurePackTenantPublicAPIFQDN = "WIN2773VM.wapdev.local"
 
-            AzurePackSQLServerExtensionFQDN = "sqlserver.contoso.com"
-            AzurePackMySQLExtensionFQDN = "mysql.contoso.com"
+            AzurePackSQLServerExtensionFQDN = "WIN2764VM.wapdev.local"
+            AzurePackMySQLExtensionFQDN = "WIN2764VM.wapdev.local"
 
-            AzurePackAdminSiteFQDN = "admin.contoso.com"
-            AzurePackWindowsAuthSiteFQDN = "adminauth.contoso.com"
-            AzurePackTenantSiteFQDN = "tenant.contoso.com"
-            AzurePackAuthSiteFQDN = "tenantauth.contoso.com"
+            AzurePackAdminSiteFQDN = "WIN2764VM.wapdev.local"
+            AzurePackWindowsAuthSiteFQDN = "WIN2764VM.wapdev.local"
+            AzurePackTenantSiteFQDN = "WIN2773VM.wapdev.local"
+            AzurePackAuthSiteFQDN = "WIN2773VM.wapdev.local"
         }
+
         @{
-            NodeName = "WAPDB.contoso.com"
-            Roles = @("Windows Azure Pack 2013 Database Server")
+            NodeName = "WIN2764VM.wapdev.local"
+            Roles = @(
+                "Windows Azure Pack 2013 Database Server"
+                "SQL Server 2012 Management Tools"
+                "Windows Azure Pack 2013 Admin API Server",
+                "Windows Azure Pack 2013 Tenant API Server",
+                "Windows Azure Pack 2013 SQL Server Extension Server",
+                "Windows Azure Pack 2013 MySQL Extension Server",
+                "Windows Azure Pack 2013 Admin Site Server",
+                "Windows Azure Pack 2013 Admin Authentication Site Server"
+            )
             SQLServers = @(
                 @{
                     Roles = @("Windows Azure Pack 2013 Database Server")
@@ -1644,60 +1725,18 @@ $ConfigurationData = @{
             )
         }
         @{
-            NodeName = "WAPA01.contoso.com"
-            Roles = @(
-                "Windows Azure Pack 2013 Admin API Server",
-                "Windows Azure Pack 2013 Tenant API Server",
-                "Windows Azure Pack 2013 SQL Server Extension Server",
-                "Windows Azure Pack 2013 MySQL Extension Server",
-                "Windows Azure Pack 2013 Admin Site Server",
-                "Windows Azure Pack 2013 Admin Authentication Site Server"
-            )
-        }
-        @{
-            NodeName = "WAPA02.contoso.com"
-            Roles = @(
-                "Windows Azure Pack 2013 Admin API Server",
-                "Windows Azure Pack 2013 Tenant API Server",
-                "Windows Azure Pack 2013 SQL Server Extension Server",
-                "Windows Azure Pack 2013 MySQL Extension Server",
-                "Windows Azure Pack 2013 Admin Site Server",
-                "Windows Azure Pack 2013 Admin Authentication Site Server"
-            )
-        }
-        @{
-            NodeName = "WAP01.contoso.com"
+            NodeName = "WIN2773VM.wapdev.local"
             Roles = @(
                 "Windows Azure Pack 2013 Tenant Public API Server",
                 "Windows Azure Pack 2013 Tenant Site Server",
                 "Windows Azure Pack 2013 Tenant Authentication Site Server"
             )
         }
-        @{
-            NodeName = "WAP02.contoso.com"
-            Roles = @(
-                "Windows Azure Pack 2013 Tenant Public API Server"
-                "Windows Azure Pack 2013 Tenant Site Server",
-                "Windows Azure Pack 2013 Tenant Authentication Site Server"
-            )
-        }
-        @{
-            NodeName = "RD01.contoso.com"
-            Roles = @(
-                "SQL Server 2012 Management Tools"
-            )
-        }
     )
 }
 
-foreach($Node in $ConfigurationData.AllNodes)
-{
-    if($Node.NodeName -ne "*")
-    {
-        Start-Process -FilePath "robocopy.exe" -ArgumentList ("`"C:\Program Files\WindowsPowerShell\Modules`" `"\\" + $Node.NodeName + "\c$\Program Files\WindowsPowerShell\Modules`" /e /purge /xf") -NoNewWindow -Wait
-    }
-}
+AzurePack_test -ConfigurationData $ConfigurationData -OutputPath 'D:\DSC\Staging\WindowsAzurePack_Test'
 
-AzurePack -ConfigurationData $ConfigurationData
-Set-DscLocalConfigurationManager -Path .\AzurePack -Verbose
-Start-DscConfiguration -Path .\AzurePack -Verbose -Wait -Force
+$Computername = <#'WIN2764VM.wapdev.local',#>'WIN2773VM.wapdev.local'
+Set-DscLocalConfigurationManager -Path 'D:\DSC\Staging\WindowsAzurePack_Test' -ComputerName $Computername -Verbose
+Start-DscConfiguration -Path 'D:\DSC\Staging\WindowsAzurePack_Test' -ComputerName $Computername -Wait -Verbose -Force
