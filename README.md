@@ -67,6 +67,8 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 
 *   **SQLInstance**: Database instance for the Azure Pack databases.
 
+*   **dbuser**: SQL user used to create the database. <new>
+
 
 ###xAzurePackFQDN
 
@@ -82,6 +84,7 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 
 *   **SQLInstance**: Database instance for the Azure Pack databases.
 
+*   **dbuser**: SQL user used to create the database. <new>
 
 ###xAzurePackDatabaseSetting
 
@@ -95,6 +98,8 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 *   **SQLServer**: REQUIRED - Database server for the Azure Pack databases.
 
 *   **SQLInstance**: Database instance for the Azure Pack databases.
+
+*   **dbuser**: SQL user used to create the database. <new>
 
 
 ###xAzurePackIdentityProvider
@@ -111,6 +116,8 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 
 *   **SQLInstance**: Database instance for the Azure Pack databases.
 
+*   **dbuser**: SQL user used to create the database. <new>
+
 
 ###xAzurePackRelyingParty
 
@@ -125,6 +132,8 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 *   **SQLServer**: REQUIRED - Database server for the Azure Pack databases.
 
 *   **SQLInstance**: Database instance for the Azure Pack databases.
+
+*   **dbuser**: SQL user used to create the database. <new>
 
 
 ###xAzurePackResourceProvider
