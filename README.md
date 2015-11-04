@@ -7,7 +7,7 @@ The **xAzurePack** module contains resources for installation and configuration 
 This module includes 8 DSC resources that automate provisioning of resources in Microsoft Azure.
 
 *   **xAzurePackSetup**: for installation and initialization of Azure Pack 
-*   **xAzureQuickVM**: simple resource for creating VMs with limited options 
+*   **xAzurePackUpdate**: for updating an Azure Pack installation
 *   **xAzurePackAdmin**: for adding Azure Pack admins
 *   **xAzurePackFQDN**: for setting the FQDN of Azure Pack roles
 *   **xAzurePackDatabaseSetting**: for setting Azure Pack database settings
@@ -212,6 +212,12 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 
 ## Versions
 
+### 1.2.0.0
+* Includes compatibility for Update Rollups 6/7/8
+* Includes update for Update Rollup 8
+* Includes dbuser parameter for installation
+* Multiple minor fixes for split deployments
+
 ### 1.1.4.0
 * Update increased timeout for setup process to start to 60 seconds. 
 
@@ -219,7 +225,6 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 
 Initial release with the following resources 
 *   **xAzurePackSetup** 
-*   **xAzureQuickVM** 
 *   **xAzurePackAdmin**
 *   **xAzurePackFQDN**
 *   **xAzurePackDatabaseSetting**
