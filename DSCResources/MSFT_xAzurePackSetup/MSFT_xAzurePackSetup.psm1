@@ -1,100 +1,100 @@
 function Get-TargetResource
 {
-	[CmdletBinding()]
-	[OutputType([System.Collections.Hashtable])]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
-		[System.String]
-		$Role,
+    [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
+        [System.String]
+        $Role,
 
-		[parameter(Mandatory = $true)]
-		[ValidateSet("Install","Initialize")]
-		[System.String]
-		$Action,
+        [parameter(Mandatory = $true)]
+        [ValidateSet("Install","Initialize")]
+        [System.String]
+        $Action,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SourcePath,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SourcePath,
 
-		[System.String]
-		$SourceFolder = "\WindowsAzurePack2013",
+        [System.String]
+        $SourceFolder = "\WindowsAzurePack2013",
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$SetupCredential,
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $SetupCredential,
 
-		[System.Management.Automation.PSCredential]
-		$Passphrase = $SetupCredential,
+        [System.Management.Automation.PSCredential]
+        $Passphrase = $SetupCredential,
 
-		[System.String]
-		$SQLServer = "localhost",
+        [System.String]
+        $SQLServer = "localhost",
 
-		[System.String]
-		$SQLInstance = "MSSQLSERVER",
+        [System.String]
+        $SQLInstance = "MSSQLSERVER",
 
-		[System.Management.Automation.PSCredential]
-		$dbUser,
+        [System.Management.Automation.PSCredential]
+        $dbUser,
 
-		[System.String]
-		$EnableCeip = "No"
-	)
+        [System.String]
+        $EnableCeip = "No"
+    )
 
-	$returnValue = @{
-		Role = $Role
-		Action = $Action
-		SourcePath = $SourcePath
-		SourceFolder = $SourceFolder
-		SQLServer = $SQLServer
-		SQLInstance = $SQLInstance
-	}
+    $returnValue = @{
+        Role = $Role
+        Action = $Action
+        SourcePath = $SourcePath
+        SourceFolder = $SourceFolder
+        SQLServer = $SQLServer
+        SQLInstance = $SQLInstance
+    }
 
-	$returnValue
+    $returnValue
 }
 
 
 function Set-TargetResource
 {
-	[CmdletBinding()]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
-		[System.String]
-		$Role,
+    [CmdletBinding()]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
+        [System.String]
+        $Role,
 
-		[parameter(Mandatory = $true)]
-		[ValidateSet("Install","Initialize")]
-		[System.String]
-		$Action,
+        [parameter(Mandatory = $true)]
+        [ValidateSet("Install","Initialize")]
+        [System.String]
+        $Action,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SourcePath,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SourcePath,
 
-		[System.String]
-		$SourceFolder = "\WindowsAzurePack2013",
+        [System.String]
+        $SourceFolder = "\WindowsAzurePack2013",
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$SetupCredential,
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $SetupCredential,
 
-		[System.Management.Automation.PSCredential]
-		$Passphrase = $SetupCredential,
+        [System.Management.Automation.PSCredential]
+        $Passphrase = $SetupCredential,
 
-		[System.String]
-		$SQLServer = "localhost",
+        [System.String]
+        $SQLServer = "localhost",
 
-		[System.String]
-		$SQLInstance = "MSSQLSERVER",
+        [System.String]
+        $SQLInstance = "MSSQLSERVER",
 
-		[System.Management.Automation.PSCredential]
-		$dbUser,
+        [System.Management.Automation.PSCredential]
+        $dbUser,
 
-		[System.String]
-		$EnableCeip = "No"
-	)
+        [System.String]
+        $EnableCeip = "No"
+    )
 
     switch($Action)
     {
@@ -174,46 +174,46 @@ function Set-TargetResource
 
 function Test-TargetResource
 {
-	[CmdletBinding()]
-	[OutputType([System.Boolean])]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
-		[System.String]
-		$Role,
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
+        [System.String]
+        $Role,
 
-		[parameter(Mandatory = $true)]
-		[ValidateSet("Install","Initialize")]
-		[System.String]
-		$Action,
+        [parameter(Mandatory = $true)]
+        [ValidateSet("Install","Initialize")]
+        [System.String]
+        $Action,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SourcePath,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SourcePath,
 
-		[System.String]
-		$SourceFolder = "\WindowsAzurePack2013",
+        [System.String]
+        $SourceFolder = "\WindowsAzurePack2013",
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$SetupCredential,
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $SetupCredential,
 
-		[System.Management.Automation.PSCredential]
-		$Passphrase = $SetupCredential,
+        [System.Management.Automation.PSCredential]
+        $Passphrase = $SetupCredential,
 
-		[System.String]
-		$SQLServer = "localhost",
+        [System.String]
+        $SQLServer = "localhost",
 
-		[System.String]
-		$SQLInstance = "MSSQLSERVER",
+        [System.String]
+        $SQLInstance = "MSSQLSERVER",
 
-		[System.Management.Automation.PSCredential]
-		$dbUser,
+        [System.Management.Automation.PSCredential]
+        $dbUser,
 
-		[System.String]
-		$EnableCeip = "No"
-	)
+        [System.String]
+        $EnableCeip = "No"
+    )
 
     switch($Action)
     {
@@ -251,7 +251,7 @@ function Test-TargetResource
         }
     }
 
-	$result
+    $result
 }
 
 

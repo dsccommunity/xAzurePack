@@ -1,35 +1,35 @@
 function Get-TargetResource
 {
-	[CmdletBinding()]
-	[OutputType([System.Collections.Hashtable])]
-	param
-	(
-		[parameter(Mandatory = $true)]
+    [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
+    param
+    (
+        [parameter(Mandatory = $true)]
         [ValidateSet("AdminSite","AuthSite","TenantSite","WindowsAuthSite")]
-		[System.String]
-		$Namespace,
+        [System.String]
+        $Namespace,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
+        [parameter(Mandatory = $true)]
+        [System.String]
         $FullyQualifiedDomainName,
 
         [System.UInt16]
         $Port,
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$AzurePackAdminCredential,
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $AzurePackAdminCredential,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SQLServer,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SQLServer,
 
-		[System.String]
-		$SQLInstance = "MSSQLSERVER",
+        [System.String]
+        $SQLInstance = "MSSQLSERVER",
 
-		[System.Management.Automation.PSCredential]
-		$dbUser
-	)
+        [System.Management.Automation.PSCredential]
+        $dbUser
+    )
 
     if($SQLInstance -eq "MSSQLSERVER")
     {
@@ -46,45 +46,45 @@ function Get-TargetResource
         Namespace = $Namespace
         FullyQualifiedDomainName = $FQDN.FullyQualifiedDomainName
         Port = $FQDN.Port
-		SQLServer = $SQLServer
-		SQLInstance = $SQLInstance
-	}
+        SQLServer = $SQLServer
+        SQLInstance = $SQLInstance
+    }
 
-	$returnValue
+    $returnValue
 }
 
 
 function Set-TargetResource
 {
-	[CmdletBinding()]
-	param
-	(
-		[parameter(Mandatory = $true)]
+    [CmdletBinding()]
+    param
+    (
+        [parameter(Mandatory = $true)]
         [ValidateSet("AdminSite","AuthSite","TenantSite","WindowsAuthSite")]
-		[System.String]
-		$Namespace,
+        [System.String]
+        $Namespace,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
+        [parameter(Mandatory = $true)]
+        [System.String]
         $FullyQualifiedDomainName,
 
         [System.UInt16]
         $Port,
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$AzurePackAdminCredential,
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $AzurePackAdminCredential,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SQLServer,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SQLServer,
 
-		[System.String]
-		$SQLInstance = "MSSQLSERVER",
+        [System.String]
+        $SQLInstance = "MSSQLSERVER",
 
-		[System.Management.Automation.PSCredential]
-		$dbUser
-	)
+        [System.Management.Automation.PSCredential]
+        $dbUser
+    )
 
     if($Port -eq 0)
     {
@@ -129,36 +129,36 @@ function Set-TargetResource
 
 function Test-TargetResource
 {
-	[CmdletBinding()]
-	[OutputType([System.Boolean])]
-	param
-	(
-		[parameter(Mandatory = $true)]
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param
+    (
+        [parameter(Mandatory = $true)]
         [ValidateSet("AdminSite","AuthSite","TenantSite","WindowsAuthSite")]
-		[System.String]
-		$Namespace,
+        [System.String]
+        $Namespace,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
+        [parameter(Mandatory = $true)]
+        [System.String]
         $FullyQualifiedDomainName,
 
         [System.UInt16]
         $Port,
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$AzurePackAdminCredential,
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $AzurePackAdminCredential,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SQLServer,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SQLServer,
 
-		[System.String]
-		$SQLInstance = "MSSQLSERVER",
+        [System.String]
+        $SQLInstance = "MSSQLSERVER",
 
-		[System.Management.Automation.PSCredential]
-		$dbUser
-	)
+        [System.Management.Automation.PSCredential]
+        $dbUser
+    )
 
     if($Port -eq 0)
     {
@@ -187,7 +187,7 @@ function Test-TargetResource
     
     $result = (($FQDN.FullyQualifiedDomainName -eq $FullyQualifiedDomainName) -and ($FQDN.Port -eq $Port))
 
-	$result
+    $result
 }
 
 

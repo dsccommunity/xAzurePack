@@ -1,31 +1,31 @@
 function Get-TargetResource
 {
-	[CmdletBinding()]
-	[OutputType([System.Collections.Hashtable])]
-	param
-	(
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure = "Present",
+    [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
+    param
+    (
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure = "Present",
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Principal,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Principal,
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$AzurePackAdminCredential,
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $AzurePackAdminCredential,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SQLServer,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SQLServer,
 
-		[System.String]
-		$SQLInstance = "MSSQLSERVER",
+        [System.String]
+        $SQLInstance = "MSSQLSERVER",
 
-		[System.Management.Automation.PSCredential]
-		$dbUser
-	)
+        [System.Management.Automation.PSCredential]
+        $dbUser
+    )
 
     if($SQLInstance -eq "MSSQLSERVER")
     {
@@ -49,41 +49,41 @@ function Get-TargetResource
     $returnValue = @{
         Ensure = $Ensure
         Principal = $Principal
-		SQLServer = $SQLServer
-		SQLInstance = $SQLInstance
-	}
+        SQLServer = $SQLServer
+        SQLInstance = $SQLInstance
+    }
 
-	$returnValue
+    $returnValue
 }
 
 
 function Set-TargetResource
 {
-	[CmdletBinding()]
-	param
-	(
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure = "Present",
+    [CmdletBinding()]
+    param
+    (
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure = "Present",
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Principal,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Principal,
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$AzurePackAdminCredential,
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $AzurePackAdminCredential,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SQLServer,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SQLServer,
 
-		[System.String]
-		$SQLInstance = "MSSQLSERVER",
+        [System.String]
+        $SQLInstance = "MSSQLSERVER",
 
-		[System.Management.Automation.PSCredential]
-		$dbUser
-	)
+        [System.Management.Automation.PSCredential]
+        $dbUser
+    )
 
     if($SQLInstance -eq "MSSQLSERVER")
     {
@@ -120,36 +120,36 @@ function Set-TargetResource
 
 function Test-TargetResource
 {
-	[CmdletBinding()]
-	[OutputType([System.Boolean])]
-	param
-	(
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure = "Present",
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param
+    (
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure = "Present",
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Principal,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Principal,
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$AzurePackAdminCredential,
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $AzurePackAdminCredential,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SQLServer,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SQLServer,
 
-		[System.String]
-		$SQLInstance = "MSSQLSERVER",
+        [System.String]
+        $SQLInstance = "MSSQLSERVER",
 
-		[System.Management.Automation.PSCredential]
-		$dbUser
-	)
+        [System.Management.Automation.PSCredential]
+        $dbUser
+    )
 
     $result = ((Get-TargetResource @PSBoundParameters).Ensure -eq $Ensure)
 
-	$result
+    $result
 }
 
 

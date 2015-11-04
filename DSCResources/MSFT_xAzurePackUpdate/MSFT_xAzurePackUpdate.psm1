@@ -1,56 +1,56 @@
 function Get-TargetResource
 {
-	[CmdletBinding()]
-	[OutputType([System.Collections.Hashtable])]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
-		[System.String]
-		$Role,
+    [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
+        [System.String]
+        $Role,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SourcePath,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SourcePath,
 
-		[System.String]
-		$SourceFolder = "\WindowsAzurePack2013\Updates",
+        [System.String]
+        $SourceFolder = "\WindowsAzurePack2013\Updates",
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$SetupCredential
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $SetupCredential
     )
 
-	$returnValue = @{
-		Role = $Role
-		SourcePath = $SourcePath
-		SourceFolder = $SourceFolder
-	}
+    $returnValue = @{
+        Role = $Role
+        SourcePath = $SourcePath
+        SourceFolder = $SourceFolder
+    }
 
-	$returnValue
+    $returnValue
 }
 
 
 function Set-TargetResource
 {
-	[CmdletBinding()]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
-		[System.String]
-		$Role,
+    [CmdletBinding()]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
+        [System.String]
+        $Role,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SourcePath,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SourcePath,
 
-		[System.String]
-		$SourceFolder = "\WindowsAzurePack2013\Updates",
+        [System.String]
+        $SourceFolder = "\WindowsAzurePack2013\Updates",
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$SetupCredential
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $SetupCredential
     )
 
     Import-Module $PSScriptRoot\..\..\xPDT.psm1
@@ -100,25 +100,25 @@ function Set-TargetResource
 
 function Test-TargetResource
 {
-	[CmdletBinding()]
-	[OutputType([System.Boolean])]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
-		[System.String]
-		$Role,
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [ValidateSet("Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site")]
+        [System.String]
+        $Role,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SourcePath,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SourcePath,
 
-		[System.String]
-		$SourceFolder = "\WindowsAzurePack2013\Updates",
+        [System.String]
+        $SourceFolder = "\WindowsAzurePack2013\Updates",
 
-		[parameter(Mandatory = $true)]
-		[System.Management.Automation.PSCredential]
-		$SetupCredential
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $SetupCredential
     )
 
     $result = $true
@@ -137,7 +137,7 @@ function Test-TargetResource
         }
     }
 
-	$result
+    $result
 }
 
 
