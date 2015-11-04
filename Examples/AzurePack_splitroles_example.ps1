@@ -1,19 +1,14 @@
-﻿#requires -Modules PSDesiredStateConfiguration, cSQLServer, xCredSSP, cAzurePack, cManageCertificates, cWebAdministration
-#requires -Version 5
+$InstallerPassword   = ConvertTo-SecureString -String 'P@ssw0rd123!' -AsPlainText -Force
+$ServerAdminPassword = ConvertTo-SecureString -String 'P@ssw0rd123!' -AsPlainText -Force
+$WAPPassphrase       = ConvertTo-SecureString -String 'P@ssw0rd123!' -AsPlainText -Force
 
-$Installerserviceaccount = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('Contoso\Administrator', (ConvertTo-SecureString -String '@dmin1strat0r!' -AsPlainText -Force))
-$SQLSAaccount = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('SA', (ConvertTo-SecureString -String '@dmin1strat0r!' -AsPlainText -Force))
-$WAPPassphrase = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('notrequired', (ConvertTo-SecureString -String 'W4Ppas$pHrase!' -AsPlainText -Force))
-$MSSQLServiceAccount = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('SRV_MSSQL', (ConvertTo-SecureString -String 'SvcP$swrd!' -AsPlainText -Force))
-$WAPCertificatePassword = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('notrequired', (ConvertTo-SecureString -String 'W@pCertificate' -AsPlainText -Force))
-
-Configuration WindowsAzurePack
+Configuration Example_WindowsAzurePack
 {
-    Import-DscResource -Module cSQLServer
+    Import-DscResource -Module xSQLServer
     Import-DscResource -Module xCredSSP
-    Import-DscResource -Module cAzurePack
+    Import-DscResource -Module xAzurePack
     Import-DscResource -Module PSDesiredStateConfiguration
-    Import-DscResource -Module cWebAdministration
+    Import-DscResource -Module xWebAdministration
     Import-DscResource -Module cManageCertificates
 
     # Set role and instance variables
@@ -1331,18 +1326,21 @@ Configuration WindowsAzurePack
 
                 if($Node.AzurePackWindowsAuthSiteFQDN)
                 {
-                    cManageCertificates 'AdminAuthenticationSite'
+                    if ($WindowsAzurePack2013AdminSiteServers[0] -ne $WindowsAzurePack2013AdminAuthenticationSiteServers[0])
                     {
-                        DependsOn = '[cAzurePackSetup]AdminAuthenticationSiteInitialize'
-                        Thumbprint = $Node.WAPCertificateThumbprint
-                        Location = $Node.WAPCertificatelocation
-                        Ensure = 'Present'
-                        Password = $Node.WAPCertificatepassword
-                        Store = 'My'
-                        StoreType = 'LocalMachine'
-                        Reboot = $false
-                        PsDscRunAsCredential = $Node.InstallerServiceAccount
-                    }                    
+                        cManageCertificates 'AdminAuthenticationSite'
+                        {
+                            DependsOn = '[cAzurePackSetup]AdminAuthenticationSiteInitialize'
+                            Thumbprint = $Node.WAPCertificateThumbprint
+                            Location = $Node.WAPCertificatelocation
+                            Ensure = 'Present'
+                            Password = $Node.WAPCertificatepassword
+                            Store = 'My'
+                            StoreType = 'LocalMachine'
+                            Reboot = $false
+                            PsDscRunAsCredential = $Node.InstallerServiceAccount
+                        }                    
+                    }                  
                     
                     cWebsite 'AdminAuthenticationSite'
                     {
@@ -1631,18 +1629,21 @@ Configuration WindowsAzurePack
 
                 if($Node.AzurePackAuthSiteFQDN)
                 {
-                    cManageCertificates 'TenantAuthenticationSite'
-                    {
-                        DependsOn = '[cAzurePackSetup]TenantAuthenticationSiteInitialize'
-                        Thumbprint = $Node.WAPCertificateThumbprint
-                        Location = $Node.WAPCertificatelocation
-                        Ensure = 'Present'
-                        Password = $Node.WAPCertificatepassword
-                        Store = 'My'
-                        StoreType = 'LocalMachine'
-                        Reboot = $false
-                        PsDscRunAsCredential = $Node.InstallerServiceAccount
-                    }                    
+                    if ($WindowsAzurePack2013TenantAuthenticationSiteServers[0] -ne $WindowsAzurePack2013TenantSiteServers[0])
+                    {                    
+                        cManageCertificates 'TenantAuthenticationSite'
+                        {
+                            DependsOn = '[cAzurePackSetup]TenantAuthenticationSiteInitialize'
+                            Thumbprint = $Node.WAPCertificateThumbprint
+                            Location = $Node.WAPCertificatelocation
+                            Ensure = 'Present'
+                            Password = $Node.WAPCertificatepassword
+                            Store = 'My'
+                            StoreType = 'LocalMachine'
+                            Reboot = $false
+                            PsDscRunAsCredential = $Node.InstallerServiceAccount
+                        }
+                    }                  
                     
                     cWebsite 'TenantAuthenticationSite'
                     {
@@ -1724,26 +1725,26 @@ $ConfigurationData = @{
     AllNodes = @(
         @{
             NodeName                        = '*'
-            PSDscAllowPlainTextPassword     = $true
             PSDscAllowDomainUser            = $true
-            SQLSourcePath                   = '\\WAP_Fileserver\Data'
+            PSDSCAllowPlaintextpassword     = $true
+            SQLSourcePath                   = '\\labfileshare\Data'
             SQLSourceFolder                 = 'SQLServer\2014'
-            SQLSysadmins                    = @('Administrator', 'Contoso\SQLAdmins')
-            WAPSourcePath                   = '\\WAP_Fileserver\Data\WAP'
-            InstallerServiceAccount         = $Installerserviceaccount
-            AdminAccount                    = '.\SQLAdmins'
-            SAPassword                      = $SQLSAaccount
-            AzurePackAdministratorsGroup    = 'Contoso\WAP_Admins'
-            WAPackPassphrase                = $WAPPassphrase
-            AzurePackTenantSiteFQDN         = 'wap.contoso.local'
-            AzurePackAdminSiteFQDN          = 'admin.contoso.local'
-            AzurePackAuthSiteFQDN           = 'auth.contoso.local'
-            AzurePackWindowsAuthSiteFQDN    = 'adminauth.contoso.local'
-            AzurePackTenantAPIFQDN          = 'wapapi.contoso.local'
-            AzurePackAdminAPIFQDN           = 'wapadminapi.contoso.local'
-            AzurePackTenantPublicAPIFQDN    = 'api.contoso.nl'
-            AzurePackSQLServerExtensionFQDN = 'wapsql.contoso.local'
-            AzurePackMySQLExtensionFQDN     = 'wapmysql.contoso.local'
+            SQLSysadmins                    = @('Administrator', 'LAB\MSSQL_Administrators')
+            WAPSourcePath                   = '\\labfileshare\Data\WAP'
+            InstallerServiceAccount         = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('LAB\Administrator', $InstallerPassword)
+            AdminAccount                    = '.\MSSQL_Administrators'
+            SAPassword                      = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('SA', $ServerAdminPassword)
+            AzurePackAdministratorsGroup    = 'LAB\WAP_Administrators'
+            WAPackPassphrase                = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('notrequired', $WAPPassphrase)
+            AzurePackTenantSiteFQDN         = 'portal.LAB.local'
+            AzurePackAdminSiteFQDN          = 'admin.LAB.local'
+            AzurePackAuthSiteFQDN           = 'auth.LAB.local'
+            AzurePackWindowsAuthSiteFQDN    = 'adminauth.LAB.local'
+            AzurePackTenantAPIFQDN          = 'wapapi.LAB.local'
+            AzurePackAdminAPIFQDN           = 'wapadminapi.LAB.local'
+            AzurePackTenantPublicAPIFQDN    = 'pubapi.LAB.local'
+            AzurePackSQLServerExtensionFQDN = 'wapsql.LAB.local'
+            AzurePackMySQLExtensionFQDN     = 'wapmysql.LAB.local'
             AzurePackAdminAPIPort           = 30004
             AzurePackTenantAPIPort          = 30005
             AzurePackTenantPublicAPIPort    = 30006
@@ -1756,13 +1757,14 @@ $ConfigurationData = @{
             AzurePackWindowsAuthSitePort    = 30072
             AzurePackTenantSitePort         = 443
             AzurePackAdminSitePort          = 443
-            WAPCertificatelocation          = '\\WAP_Fileserver\Data\WAP\Prerequisites\WAP.pfx'
-            WAPCertificateThumbprint        = '1b20123c7c5e719788c05e45f19f05cd3c214d34'
-            WAPCertificatepassword          = $WAPCertificatePassword
+            WAPCertificatelocation          = '\\labfileshare\Data\WAP\Prerequisites\WAP.pfx'
+            WAPCertificateThumbprint        = '1a10106c6d53119788105e45f81305c382e44d34'
+            WAPCertificatepassword          = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('LAB\Administrator', $InstallerPassword)
         }
 
         @{
-            NodeName   = 'WAP_Database'
+            NodeName   = 'Databaseserver'
+            NodeGuid   = 'ce553425-8ff2-4dd0-94c8-80427696b8fa'
             Roles      = @(
                 'Windows Azure Pack 2013 Database Server'
             )
@@ -1770,18 +1772,20 @@ $ConfigurationData = @{
                 @{
                     Roles          = @('Windows Azure Pack 2013 Database Server')
                     InstanceName   = 'MSSQLSERVER'
-                    Serviceaccount = $MSSQLServiceAccount
+                    Serviceaccount = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ('SRV_MSSQL', (ConvertTo-SecureString -String '$erv1ceP$$wd!' -AsPlainText -Force))
                 }
             )
         }
         @{
-            NodeName   = 'WAP_TenantAPI'
+            NodeName   = 'TenantAPI'
+            NodeGuid   = 'e047c414-2bfc-48d8-bf15-dc84575f9315'
             Roles      = @(
                 'Windows Azure Pack 2013 Tenant API Server'
             )
         }
         @{
-            NodeName   = 'WAP_AdminAPI'
+            NodeName   = 'AdminAPI_SQLext_MYSQLext'
+            NodeGuid   = 'd7f7f1f3-8910-4b8e-bb5a-0c677d0aac0e'
             Roles      = @(
                 'Windows Azure Pack 2013 Admin API Server', 
                 'Windows Azure Pack 2013 SQL Server Extension Server', 
@@ -1789,7 +1793,8 @@ $ConfigurationData = @{
             )
         }
         @{
-            NodeName   = 'WAP_TenantSite'
+            NodeName   = 'TenantSite_TenantPublicAPI_TenantAuthenticationSite'
+            NodeGuid   = 'a3fb549d-873a-411c-a71a-859d9c9ae4cb'
             Roles      = @(
                 'Windows Azure Pack 2013 Tenant Public API Server', 
                 'Windows Azure Pack 2013 Tenant Site Server', 
@@ -1797,7 +1802,8 @@ $ConfigurationData = @{
             )
         }
         @{
-            NodeName   = 'WAP_AdminSite'
+            NodeName   = 'AdminSite_AdminAuthenticationSite'
+            NodeGuid   = '434e50c2-f289-48b2-b92d-20725831f4ed'
             Roles      = @(
                 'Windows Azure Pack 2013 Admin Site Server', 
                 'Windows Azure Pack 2013 Admin Authentication Site Server'
@@ -1806,7 +1812,4 @@ $ConfigurationData = @{
     )
 }
 
-WindowsAzurePack -ConfigurationData $ConfigurationData -OutputPath 'C:\DSC\Staging\WindowsAzurePack'
-
-Set-DscLocalConfigurationManager -Path 'C:\DSC\Staging\WindowsAzurePack' -Verbose
-Start-DscConfiguration -Path 'C:\DSC\Staging\WindowsAzurePack' -Wait -Verbose -Force
+Example_WindowsAzurePack -ConfigurationData $ConfigurationData -OutputPath 'C:\DSC\Staging\Example_WindowsAzurePack'
