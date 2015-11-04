@@ -1,112 +1,112 @@
 function Get-TargetResource
 {
-    [CmdletBinding()]
-    [OutputType([System.Collections.Hashtable])]
-    param
-    (
-        [parameter(Mandatory = $true)]
-        [System.String]
+	[CmdletBinding()]
+	[OutputType([System.Collections.Hashtable])]
+	param
+	(
+		[parameter(Mandatory = $true)]
+		[System.String]
         $AuthenticationSite,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
+		[parameter(Mandatory = $true)]
+		[System.String]
         $AdminUri,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
+		[parameter(Mandatory = $true)]
+		[System.String]
         $Name,
 
-        [parameter(Mandatory = $true)]
-        [System.Management.Automation.PSCredential]
-        $AzurePackAdminCredential,
+		[parameter(Mandatory = $true)]
+		[System.Management.Automation.PSCredential]
+		$AzurePackAdminCredential,
 
-        [System.String]
+		[System.String]
         $DisplayName,
 
-        [System.Boolean]
+		[System.Boolean]
         $Enabled = $true,
 
-        [System.Boolean]
+		[System.Boolean]
         $PassthroughEnabled,
 
-        [System.Boolean]
+		[System.Boolean]
         $AllowAnonymousAccess,
 
-        [System.Boolean]
+		[System.Boolean]
         $AllowMultipleInstances,
 
-        [System.String]
+		[System.String]
         $AdminForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $AdminAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $AdminAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$AdminAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $TenantForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $TenantAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $TenantAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$TenantAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $TenantSourceUriTemplate,
 
-        [System.String]
+		[System.String]
         $TenantTargetUriTemplate,
 
-        [System.String]
+		[System.String]
         $UsageForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $UsageAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $UsageAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$UsageAuthenticationUser,
 
-        [System.String]
+    	[System.String]
         $HealthCheckForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $HealthCheckAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $HealthCheckAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$HealthCheckAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $NotificationForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $NotificationAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $NotificationAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$NotificationAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $InstanceId,
 
-        [System.String]
+		[System.String]
         $InstanceDisplayName,
 
-        [System.String]
+		[System.String]
         $MaxQuotaUpdateBatchSize,
 
-        [System.String]
+		[System.String]
         $SubscriptionStatusPollingInterval,
 
-        [System.String]
+		[System.String]
         [ValidateSet("Standard","UsageProvider","CloudServiceProvider")]
         $Type
-    )
+	)
 
     $RP = Invoke-Command -ComputerName . -Credential $AzurePackAdminCredential -Authentication Credssp {
         $AuthenticationSite = $args[0]
@@ -149,118 +149,118 @@ function Get-TargetResource
 
     $returnValue = $RP
 
-    $returnValue
+	$returnValue
 }
 
 
 function Set-TargetResource
 {
-    [CmdletBinding()]
-    param
-    (
-        [parameter(Mandatory = $true)]
-        [System.String]
+	[CmdletBinding()]
+	param
+	(
+		[parameter(Mandatory = $true)]
+		[System.String]
         $AuthenticationSite,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
+		[parameter(Mandatory = $true)]
+		[System.String]
         $AdminUri,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
+		[parameter(Mandatory = $true)]
+		[System.String]
         $Name,
 
-        [parameter(Mandatory = $true)]
-        [System.Management.Automation.PSCredential]
-        $AzurePackAdminCredential,
+		[parameter(Mandatory = $true)]
+		[System.Management.Automation.PSCredential]
+		$AzurePackAdminCredential,
 
-        [System.String]
+		[System.String]
         $DisplayName,
 
-        [System.Boolean]
+		[System.Boolean]
         $Enabled = $true,
 
-        [System.Boolean]
+		[System.Boolean]
         $PassthroughEnabled,
 
-        [System.Boolean]
+		[System.Boolean]
         $AllowAnonymousAccess,
 
-        [System.Boolean]
+		[System.Boolean]
         $AllowMultipleInstances,
 
-        [System.String]
+		[System.String]
         $AdminForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $AdminAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $AdminAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$AdminAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $TenantForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $TenantAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $TenantAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$TenantAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $TenantSourceUriTemplate,
 
-        [System.String]
+		[System.String]
         $TenantTargetUriTemplate,
 
-        [System.String]
+		[System.String]
         $UsageForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $UsageAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $UsageAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$UsageAuthenticationUser,
 
-        [System.String]
+    	[System.String]
         $HealthCheckForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $HealthCheckAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $HealthCheckAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$HealthCheckAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $NotificationForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $NotificationAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $NotificationAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$NotificationAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $InstanceId,
 
-        [System.String]
+		[System.String]
         $InstanceDisplayName,
 
-        [System.String]
+		[System.String]
         $MaxQuotaUpdateBatchSize,
 
-        [System.String]
+		[System.String]
         $SubscriptionStatusPollingInterval,
 
-        [System.String]
+		[System.String]
         [ValidateSet("Standard","UsageProvider","CloudServiceProvider")]
         $Type
-    )
+	)
 
     Invoke-Command -ComputerName . -Credential $AzurePackAdminCredential -Authentication Credssp {
         $AuthenticationSite = $args[0]
@@ -511,113 +511,113 @@ function Set-TargetResource
 
 function Test-TargetResource
 {
-    [CmdletBinding()]
-    [OutputType([System.Boolean])]
-    param
-    (
-        [parameter(Mandatory = $true)]
-        [System.String]
+	[CmdletBinding()]
+	[OutputType([System.Boolean])]
+	param
+	(
+		[parameter(Mandatory = $true)]
+		[System.String]
         $AuthenticationSite,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
+		[parameter(Mandatory = $true)]
+		[System.String]
         $AdminUri,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
+		[parameter(Mandatory = $true)]
+		[System.String]
         $Name,
 
-        [parameter(Mandatory = $true)]
-        [System.Management.Automation.PSCredential]
-        $AzurePackAdminCredential,
+		[parameter(Mandatory = $true)]
+		[System.Management.Automation.PSCredential]
+		$AzurePackAdminCredential,
 
-        [System.String]
+		[System.String]
         $DisplayName,
 
-        [System.Boolean]
+		[System.Boolean]
         $Enabled = $true,
 
-        [System.Boolean]
+		[System.Boolean]
         $PassthroughEnabled,
 
-        [System.Boolean]
+		[System.Boolean]
         $AllowAnonymousAccess,
 
-        [System.Boolean]
+		[System.Boolean]
         $AllowMultipleInstances,
 
-        [System.String]
+		[System.String]
         $AdminForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $AdminAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $AdminAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$AdminAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $TenantForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $TenantAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $TenantAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$TenantAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $TenantSourceUriTemplate,
 
-        [System.String]
+		[System.String]
         $TenantTargetUriTemplate,
 
-        [System.String]
+		[System.String]
         $UsageForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $UsageAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $UsageAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$UsageAuthenticationUser,
 
-        [System.String]
+    	[System.String]
         $HealthCheckForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $HealthCheckAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $HealthCheckAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$HealthCheckAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $NotificationForwardingAddress,
 
-        [System.String]
+		[System.String]
         [ValidateSet("None","Basic","Windows")]
         $NotificationAuthenticationMode,
 
-        [System.Management.Automation.PSCredential]
-        $NotificationAuthenticationUser,
+		[System.Management.Automation.PSCredential]
+		$NotificationAuthenticationUser,
 
-        [System.String]
+		[System.String]
         $InstanceId,
 
-        [System.String]
+		[System.String]
         $InstanceDisplayName,
 
-        [System.String]
+		[System.String]
         $MaxQuotaUpdateBatchSize,
 
-        [System.String]
+		[System.String]
         $SubscriptionStatusPollingInterval,
 
-        [System.String]
+		[System.String]
         [ValidateSet("Standard","UsageProvider","CloudServiceProvider")]
         $Type
-    )
+	)
 
     $RP = Get-TargetResource @PSBoundParameters
     
@@ -757,7 +757,7 @@ function Test-TargetResource
         $result = $false
     }
 
-    $result
+	$result
 }
 
 

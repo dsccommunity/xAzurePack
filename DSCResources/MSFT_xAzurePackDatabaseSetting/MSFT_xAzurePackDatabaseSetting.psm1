@@ -1,108 +1,103 @@
 function Get-TargetResource
 {
-    [CmdletBinding()]
-    [OutputType([System.Collections.Hashtable])]
-    param
-    (
-        [parameter(Mandatory = $true)]
+	[CmdletBinding()]
+	[OutputType([System.Collections.Hashtable])]
+	param
+	(
+		[parameter(Mandatory = $true)]
         [ValidateSet("AdminSite","TenantSite")]
-        [System.String]
-        $Namespace,
+		[System.String]
+		$Namespace,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $Name,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$Name,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
+		[parameter(Mandatory = $true)]
+		[System.String]
         $Value,
 
-        [parameter(Mandatory = $true)]
-        [System.Management.Automation.PSCredential]
-        $AzurePackAdminCredential,
+		[parameter(Mandatory = $true)]
+		[System.Management.Automation.PSCredential]
+		$AzurePackAdminCredential,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $SQLServer,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$SQLServer,
 
-        [System.String]
-        $SQLInstance = "MSSQLSERVER"
-    )
+		[System.String]
+		$SQLInstance = "MSSQLSERVER",
+
+		[System.Management.Automation.PSCredential]
+		$dbUser
+	)
 
     if($SQLInstance -eq "MSSQLSERVER")
     {
-        $ConnectionString = "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.PortalConfigStore;Integrated Security=True";
+        $ConnectionString = "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.PortalConfigStore;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)";
     }
     else
     {
-        $ConnectionString = "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.PortalConfigStore;Integrated Security=True";
+        $ConnectionString = "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.PortalConfigStore;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)";
     }
 
-    $Value = Invoke-Command -ComputerName . -Credential $AzurePackAdminCredential -Authentication Credssp {
-        $Namespace = $args[0]
-        $Name = $args[1]
-        $ConnectionString = $args[2]
-        (Get-MgmtSvcDatabaseSetting -Namespace $Namespace -Name $Name -ConnectionString $ConnectionString).Value
-    } -ArgumentList @($Namespace,$Name,$ConnectionString)
+    $Value = (Get-MgmtSvcDatabaseSetting -Namespace $Namespace -Name $Name -ConnectionString $ConnectionString).Value
 
     $returnValue = @{
         Name = $Name
         Value = $Value
-        SQLServer = $SQLServer
-        SQLInstance = $SQLInstance
-    }
+		SQLServer = $SQLServer
+		SQLInstance = $SQLInstance
+	}
 
-    $returnValue
+	$returnValue
 }
 
 
 function Set-TargetResource
 {
-    [CmdletBinding()]
-    param
-    (
-        [parameter(Mandatory = $true)]
+	[CmdletBinding()]
+	param
+	(
+		[parameter(Mandatory = $true)]
         [ValidateSet("AdminSite","TenantSite")]
-        [System.String]
-        $Namespace,
+		[System.String]
+		$Namespace,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $Name,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$Name,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
+		[parameter(Mandatory = $true)]
+		[System.String]
         $Value,
 
-        [parameter(Mandatory = $true)]
-        [System.Management.Automation.PSCredential]
-        $AzurePackAdminCredential,
+		[parameter(Mandatory = $true)]
+		[System.Management.Automation.PSCredential]
+		$AzurePackAdminCredential,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $SQLServer,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$SQLServer,
 
-        [System.String]
-        $SQLInstance = "MSSQLSERVER"
-    )
+		[System.String]
+		$SQLInstance = "MSSQLSERVER",
+
+		[System.Management.Automation.PSCredential]
+		$dbUser
+	)
 
    
     if($SQLInstance -eq "MSSQLSERVER")
     {
-        $ConnectionString = "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.PortalConfigStore;Integrated Security=True";
+        $ConnectionString = "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.PortalConfigStore;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)";
     }
     else
     {
-        $ConnectionString = "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.PortalConfigStore;Integrated Security=True";
+        $ConnectionString = "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.PortalConfigStore;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)";
     }
 
-    Invoke-Command -ComputerName . -Credential $AzurePackAdminCredential -Authentication Credssp {
-        $Namespace = $args[0]
-        $Name = $args[1]
-        $Value = $args[2]
-        $ConnectionString = $args[3]
-        Set-MgmtSvcDatabaseSetting -Namespace $Namespace -Name $Name -Value $Value -ConnectionString $ConnectionString -Force
-    } -ArgumentList @($Namespace,$Name,$Value,$ConnectionString)
+    Set-MgmtSvcDatabaseSetting -Namespace $Namespace -Name $Name -Value $Value -ConnectionString $ConnectionString -Force
 
     if(!(Test-TargetResource @PSBoundParameters))
     {
@@ -113,38 +108,41 @@ function Set-TargetResource
 
 function Test-TargetResource
 {
-    [CmdletBinding()]
-    [OutputType([System.Boolean])]
-    param
-    (
-        [parameter(Mandatory = $true)]
+	[CmdletBinding()]
+	[OutputType([System.Boolean])]
+	param
+	(
+		[parameter(Mandatory = $true)]
         [ValidateSet("AdminSite","TenantSite")]
-        [System.String]
-        $Namespace,
+		[System.String]
+		$Namespace,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $Name,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$Name,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
+		[parameter(Mandatory = $true)]
+		[System.String]
         $Value,
 
-        [parameter(Mandatory = $true)]
-        [System.Management.Automation.PSCredential]
-        $AzurePackAdminCredential,
+		[parameter(Mandatory = $true)]
+		[System.Management.Automation.PSCredential]
+		$AzurePackAdminCredential,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $SQLServer,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$SQLServer,
 
-        [System.String]
-        $SQLInstance = "MSSQLSERVER"
-    )
+		[System.String]
+		$SQLInstance = "MSSQLSERVER",
+
+		[System.Management.Automation.PSCredential]
+		$dbUser
+	)
 
     $result = ((Get-TargetResource @PSBoundParameters).Value -eq $Value)
 
-    $result
+	$result
 }
 
 

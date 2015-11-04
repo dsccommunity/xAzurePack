@@ -1,42 +1,42 @@
 function Get-TargetResource
 {
-    [CmdletBinding()]
-    [OutputType([System.Collections.Hashtable])]
-    param
-    (
-        [ValidateSet("Present","Absent")]
-        [System.String]
-        $Ensure = "Present",
+	[CmdletBinding()]
+	[OutputType([System.Collections.Hashtable])]
+	param
+	(
+		[ValidateSet("Present","Absent")]
+		[System.String]
+		$Ensure = "Present",
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $Principal,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$Principal,
 
-        [parameter(Mandatory = $true)]
-        [System.Management.Automation.PSCredential]
-        $AzurePackAdminCredential,
+		[parameter(Mandatory = $true)]
+		[System.Management.Automation.PSCredential]
+		$AzurePackAdminCredential,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $SQLServer,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$SQLServer,
 
-        [System.String]
-        $SQLInstance = "MSSQLSERVER"
-    )
+		[System.String]
+		$SQLInstance = "MSSQLSERVER",
+
+		[System.Management.Automation.PSCredential]
+		$dbUser
+	)
 
     if($SQLInstance -eq "MSSQLSERVER")
     {
-        $ConnectionString = "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.Store;Integrated Security=True"
+        $ConnectionString = "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.Store;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)"
     }
     else
     {
-        $ConnectionString = "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.Store;Integrated Security=True"
+        $ConnectionString = "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.Store;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)"
     }
 
-    $Ensure = Invoke-Command -ComputerName . -Credential $AzurePackAdminCredential -Authentication Credssp {
-        $Ensure = $args[0]
-        $Principal = $args[1]
-        $ConnectionString = $args[2]
+    $Ensure = 
         if(Get-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString)
         {
             "Present"
@@ -45,57 +45,54 @@ function Get-TargetResource
         {
             "Absent"
         }
-    } -ArgumentList @($Ensure,$Principal,$ConnectionString)
 
     $returnValue = @{
         Ensure = $Ensure
         Principal = $Principal
-        SQLServer = $SQLServer
-        SQLInstance = $SQLInstance
-    }
+		SQLServer = $SQLServer
+		SQLInstance = $SQLInstance
+	}
 
-    $returnValue
+	$returnValue
 }
 
 
 function Set-TargetResource
 {
-    [CmdletBinding()]
-    param
-    (
-        [ValidateSet("Present","Absent")]
-        [System.String]
-        $Ensure = "Present",
+	[CmdletBinding()]
+	param
+	(
+		[ValidateSet("Present","Absent")]
+		[System.String]
+		$Ensure = "Present",
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $Principal,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$Principal,
 
-        [parameter(Mandatory = $true)]
-        [System.Management.Automation.PSCredential]
-        $AzurePackAdminCredential,
+		[parameter(Mandatory = $true)]
+		[System.Management.Automation.PSCredential]
+		$AzurePackAdminCredential,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $SQLServer,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$SQLServer,
 
-        [System.String]
-        $SQLInstance = "MSSQLSERVER"
-    )
+		[System.String]
+		$SQLInstance = "MSSQLSERVER",
+
+		[System.Management.Automation.PSCredential]
+		$dbUser
+	)
 
     if($SQLInstance -eq "MSSQLSERVER")
     {
-        $ConnectionString = "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.Store;Integrated Security=True"
+        $ConnectionString = "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.Store;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)"
     }
     else
     {
-        $ConnectionString = "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.Store;Integrated Security=True"
+        $ConnectionString = "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.Store;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)"
     }
-
-    Invoke-Command -ComputerName . -Credential $AzurePackAdminCredential -Authentication Credssp {
-        $Ensure = $args[0]
-        $Principal = $args[1]
-        $ConnectionString = $args[2]
         switch($Ensure)
         {
             "Present"
@@ -113,7 +110,6 @@ function Set-TargetResource
                 }
             }
         }
-    } -ArgumentList @($Ensure,$Principal,$ConnectionString)
 
     if(!(Test-TargetResource @PSBoundParameters))
     {
@@ -124,33 +120,36 @@ function Set-TargetResource
 
 function Test-TargetResource
 {
-    [CmdletBinding()]
-    [OutputType([System.Boolean])]
-    param
-    (
-        [ValidateSet("Present","Absent")]
-        [System.String]
-        $Ensure = "Present",
+	[CmdletBinding()]
+	[OutputType([System.Boolean])]
+	param
+	(
+		[ValidateSet("Present","Absent")]
+		[System.String]
+		$Ensure = "Present",
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $Principal,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$Principal,
 
-        [parameter(Mandatory = $true)]
-        [System.Management.Automation.PSCredential]
-        $AzurePackAdminCredential,
+		[parameter(Mandatory = $true)]
+		[System.Management.Automation.PSCredential]
+		$AzurePackAdminCredential,
 
-        [parameter(Mandatory = $true)]
-        [System.String]
-        $SQLServer,
+		[parameter(Mandatory = $true)]
+		[System.String]
+		$SQLServer,
 
-        [System.String]
-        $SQLInstance = "MSSQLSERVER"
-    )
+		[System.String]
+		$SQLInstance = "MSSQLSERVER",
+
+		[System.Management.Automation.PSCredential]
+		$dbUser
+	)
 
     $result = ((Get-TargetResource @PSBoundParameters).Ensure -eq $Ensure)
 
-    $result
+	$result
 }
 
 
