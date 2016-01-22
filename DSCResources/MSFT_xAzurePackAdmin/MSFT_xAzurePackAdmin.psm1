@@ -4,9 +4,9 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [ValidateSet("Present","Absent")]
+        [ValidateSet('Present','Absent')]
         [System.String]
-        $Ensure = "Present",
+        $Ensure = 'Present',
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -21,35 +21,29 @@ function Get-TargetResource
         $SQLServer,
 
         [System.String]
-        $SQLInstance = "MSSQLSERVER",
+        $SQLInstance = 'MSSQLSERVER',
 
+        [parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         $dbUser
     )
 
-    if($SQLInstance -eq "MSSQLSERVER")
+    $ConnectionString = Get-SQLConnectionString @PSBoundParameters
+
+    $Ensure = 
+    if(Get-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString)
     {
-        $ConnectionString = "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.Store;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)"
+        'Present'
     }
     else
     {
-        $ConnectionString = "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.Store;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)"
+        'Absent'
     }
 
-    $Ensure = 
-        if(Get-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString)
-        {
-            "Present"
-        }
-        else
-        {
-            "Absent"
-        }
-
     $returnValue = @{
-        Ensure = $Ensure
-        Principal = $Principal
-        SQLServer = $SQLServer
+        Ensure      = $Ensure
+        Principal   = $Principal
+        SQLServer   = $SQLServer
         SQLInstance = $SQLInstance
     }
 
@@ -62,9 +56,9 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
-        [ValidateSet("Present","Absent")]
+        [ValidateSet('Present','Absent')]
         [System.String]
-        $Ensure = "Present",
+        $Ensure = 'Present',
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -79,41 +73,36 @@ function Set-TargetResource
         $SQLServer,
 
         [System.String]
-        $SQLInstance = "MSSQLSERVER",
+        $SQLInstance = 'MSSQLSERVER',
 
+        [parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         $dbUser
     )
 
-    if($SQLInstance -eq "MSSQLSERVER")
+    $ConnectionString = Get-SQLConnectionString @PSBoundParameters
+
+    switch($Ensure)
     {
-        $ConnectionString = "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.Store;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)"
-    }
-    else
-    {
-        $ConnectionString = "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.Store;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)"
-    }
-        switch($Ensure)
+        'Present'
         {
-            "Present"
+            if(!(Get-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString))
             {
-                if(!(Get-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString))
-                {
-                    Add-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString
-                }
-            }
-            "Absent"
-            {
-                if(Get-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString)
-                {
-                    Remove-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString
-                }
+                Add-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString
             }
         }
+        'Absent'
+        {
+            if(Get-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString)
+            {
+                Remove-MgmtSvcAdminUser -Principal $Principal -ConnectionString $ConnectionString
+            }
+        }
+    }
 
     if(!(Test-TargetResource @PSBoundParameters))
     {
-        throw "Set-TargetResouce failed"
+        throw 'Set-TargetResouce failed'
     }
 }
 
@@ -124,9 +113,9 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [ValidateSet("Present","Absent")]
+        [ValidateSet('Present','Absent')]
         [System.String]
-        $Ensure = "Present",
+        $Ensure = 'Present',
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -141,8 +130,9 @@ function Test-TargetResource
         $SQLServer,
 
         [System.String]
-        $SQLInstance = "MSSQLSERVER",
+        $SQLInstance = 'MSSQLSERVER',
 
+        [parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         $dbUser
     )
@@ -150,6 +140,30 @@ function Test-TargetResource
     $result = ((Get-TargetResource @PSBoundParameters).Ensure -eq $Ensure)
 
     $result
+}
+
+Function Get-SQLConnectionString
+{
+    param(
+        [parameter(Mandatory = $true)]
+        [String]$SQLServer,
+        
+        [parameter(Mandatory = $true)]
+        [String]$SQLInstance,
+
+        [parameter(Mandatory = $true)]
+        [System.Management.Automation.PSCredential]
+        $dbUser
+    )
+
+    if($SQLInstance -eq 'MSSQLSERVER')
+    {
+        return "Data Source=$SQLServer;Initial Catalog=Microsoft.MgmtSvc.Store;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)"
+    }
+    else
+    {
+        return "Data Source=$SQLServer\$SQLInstance;Initial Catalog=Microsoft.MgmtSvc.Store;User ID=$($dbUser.UserName);Password=$($dbUser.GetNetworkCredential().password)"
+    }
 }
 
 
