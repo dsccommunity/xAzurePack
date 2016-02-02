@@ -213,6 +213,8 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 ## Versions
 
 ### Unreleased
+
+### 1.3.0.0
 * Includes compatibility for Update Rollups 6/7/8
 * Includes update for Update Rollup 8
 * Includes dbuser parameter for installation
