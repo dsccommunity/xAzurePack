@@ -213,6 +213,8 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 ## Versions
 
 ### Unreleased
+
+### 1.4.0.0
 * Includes compatibility for Update Rollup 9.1
 
 ### 1.3.0.0
