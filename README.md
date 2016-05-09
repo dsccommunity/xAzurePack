@@ -213,6 +213,10 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 ## Versions
 
 ### Unreleased
+* Changed xAzurePackSetup to use ProductName instead of ProductID
+* Changed xAzurePackUpdate to use ProductName and ProductVersion instead of ProductID
+* Update to example to remove the need for community resources
+* Includes compatibility for Update Rollup 10
 
 ### 1.4.0.0
 * Includes compatibility for Update Rollup 9.1
