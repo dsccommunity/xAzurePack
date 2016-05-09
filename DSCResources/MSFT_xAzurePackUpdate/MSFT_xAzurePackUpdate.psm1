@@ -30,7 +30,6 @@ function Get-TargetResource
     $returnValue
 }
 
-
 function Set-TargetResource
 {
     [CmdletBinding()]
@@ -60,15 +59,16 @@ function Set-TargetResource
     Write-Verbose "Path: $Path"
 
     $TempPath = [IO.Path]::GetTempPath().TrimEnd('\')
-    $Products = (Get-WmiObject -Class Win32_Product).IdentifyingNumber
-    $Components = GetWAPComponents -Role $Role
+    $buildversion = '3.32.8196.12' # Update Rollup 10 https://support.microsoft.com/en-gb/kb/3158609
+    $Products = (Get-WmiObject -Class Win32_Product | Where-Object {$_.version -eq $buildversion}).Name
+    $Components = Get-WAPComponents -Role $Role
     foreach($Component in $Components)
     {
         $ComponentInstalled = $true
         if($ComponentInstalled)
         {
-            $IdentifyingNumbers = GetWAPComponentIdentifyingNumbers -Component $Component
-            $ComponentInstalled = GetComponentInstalled -Products $Products -IdentifyingNumbers $IdentifyingNumbers
+            $Componentnames = Get-WAPComponentNames -Component $Component
+            $ComponentInstalled = Get-ComponentInstalled -Products $Products -ComponentNames $Componentnames
             if(!$ComponentInstalled)
             {
                 $MSIPath = ResolvePath "$SourcePath\$SourceFolder\$Component.msi"
@@ -79,7 +79,7 @@ function Set-TargetResource
                 Write-Verbose $Process
                 WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments -Credential $SetupCredential
                 Remove-Item -Path "$TempPath\$Component.msi"
-                $ComponentInstalled = GetComponentInstalled -Products $Products -IdentifyingNumbers $IdentifyingNumbers
+                $ComponentInstalled = Get-ComponentInstalled -Products $Products -IdentifyingNumbers $IdentifyingNumbers
             }
         }
     }
@@ -96,7 +96,6 @@ function Set-TargetResource
         }
     }
 }
-
 
 function Test-TargetResource
 {
@@ -122,14 +121,15 @@ function Test-TargetResource
     )
 
     $result = $true
-    $Products = (Get-WmiObject -Class Win32_Product).IdentifyingNumber
-    $Components = GetWAPComponents -Role $Role
+    $buildversion = '3.32.8196.12' # Update Rollup 10 https://support.microsoft.com/en-gb/kb/3158609
+    $Products = (Get-WmiObject -Class Win32_Product | Where-Object {$_.version -eq $buildversion}).Name
+    $Components = Get-WAPComponents -Role $Role
     foreach($Component in $Components)
     {
         if($result)
         {
-            $IdentifyingNumbers = GetWAPComponentIdentifyingNumbers -Component $Component
-            $ComponentInstalled = GetComponentInstalled -Products $Products -IdentifyingNumbers $IdentifyingNumbers
+            $Componentnames = Get-WAPComponentNames -Component $Component
+            $ComponentInstalled = Get-ComponentInstalled -Products $Products -ComponentNames $Componentnames
             if(!$ComponentInstalled)
             {
                 $result = $false
@@ -140,8 +140,7 @@ function Test-TargetResource
     $result
 }
 
-
-function GetWAPComponents
+function Get-WAPComponents
 {
     param
     (
@@ -229,8 +228,7 @@ function GetWAPComponents
     }
 }
 
-
-function GetWAPComponentIdentifyingNumbers
+function Get-WAPComponentNames
 {
     param
     (
@@ -242,107 +240,64 @@ function GetWAPComponentIdentifyingNumbers
     {
         'MgmtSvc-PowerShellAPI'
         {
-            return @(
-                '{F525AB73-3F65-4AF7-AE32-C6E732B9A7E0}'
-
-            )
+            return 'Windows Azure Pack - PowerShell API - 2013'
         }
         'MgmtSvc-WebAppGallery'
         {
-            return @(
-                '{9C9D2734-902A-4F41-8C56-AC21E216745F}'
-
-            )
+            return 'Windows Azure Pack - Web App Gallery Extension - 2013'
         }
         'MgmtSvc-Monitoring'
         {
-            return @(
-                '{649E3CE3-4F85-4F49-B850-1A4B00BDF944}'
-
-            )
+            return 'Windows Azure Pack - Monitoring Extension - 2013'
         }
         'MgmtSvc-Usage'
         {
-            return @(
-                '{946B0B96-13AF-404E-98F0-D38BF3828E8E}'
-
-            )
+            return 'Windows Azure Pack - Usage Extension - 2013'
         }
         'MgmtSvc-AdminAPI'
         {
-            return @(
-                '{DAB5A87F-32D0-4E96-B7FD-47DBDC6EAEED}'
-
-            )
+            return 'Windows Azure Pack - Admin API - 2013'
         }
         'MgmtSvc-TenantAPI'
         {
-            return @(
-                '{CF41308C-9BC3-46C1-8B39-135D00E491E8}'
-
-            )
+            return 'Windows Azure Pack - Tenant API - 2013'
         }
         'MgmtSvc-TenantPublicAPI'
         {
-            return @(
-                '{7442368E-A20A-4B4A-9304-104B7191CD82}'
-
-            )
+            return 'Windows Azure Pack - Tenant Public API - 2013'
         }
         'MgmtSvc-SQLServer'
         {
-            return @(
-                '{FFE3B7AD-BED4-4F9C-98CC-D75E64B770EE}'
-
-            )
+            return 'Windows Azure Pack - SQL Server Extension - 2013'
         }
         'MgmtSvc-MySQL'
         {
-            return @(
-                '{038DEB00-87C2-483D-B303-3732A6CE6280}'
-
-            )
+            return 'Windows Azure Pack - MySQL Extension - 2013'
         }
         'MgmtSvc-AdminSite'
         {
-            return @(
-                '{8DFE1C24-EF33-4DE8-A8F2-192C7E1FECE0}'
-
-            )
+            return 'Windows Azure Pack - Admin Site - 2013'
         }
         'MgmtSvc-WindowsAuthSite'
         {
-            return @(
-                '{42A86301-91AA-4CF2-95AB-C305052ECEFD}'
-
-            )
+            return 'Windows Azure Pack - Admin Authentication Site - 2013'
         }
         'MgmtSvc-TenantSite'
         {
-            return @(
-                '{78E38778-C952-4B53-96D8-A65DB9683269}'
-
-            )
+            return 'Windows Azure Pack - Tenant Site - 2013'
         }
         'MgmtSvc-AuthSite'
         {
-            return @(
-                '{B2D82054-D973-4447-BDDF-AE7D11E86585}'
-
-            )
+            return 'Windows Azure Pack - Tenant Authentication Site - 2013'
         }
         'MgmtSvc-ConfigSite'
         {
-            return @(
-                '{53DA6693-27E7-438C-A4C1-BE2FCA1811DC}'
-
-            )
+            return 'Windows Azure Pack - Configuration Site - 2013'
         }
     }
 }
 
-
-function GetComponentInstalled
+function Get-ComponentInstalled
 {
     param
     (
@@ -350,15 +305,15 @@ function GetComponentInstalled
         $Products,
 
         [String[]]
-        $IdentifyingNumbers
+        $ComponentNames
     )
 
     $ComponentInstalled = $false
-    foreach($IdentifyingNumber in $IdentifyingNumbers)
+    foreach($ComponentName in $ComponentNames)
     {
         if(!$ComponentInstalled)
         {
-            if($Products | Where-Object {$_ -eq $IdentifyingNumber})
+            if($Products | Where-Object {$_ -eq $ComponentName})
             {
                 $ComponentInstalled = $true
             }
@@ -367,6 +322,5 @@ function GetComponentInstalled
 
     return $ComponentInstalled
 }
-
 
 Export-ModuleMember -Function *-TargetResource
