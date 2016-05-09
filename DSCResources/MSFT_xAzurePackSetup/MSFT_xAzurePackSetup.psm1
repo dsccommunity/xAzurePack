@@ -23,9 +23,11 @@ function Get-TargetResource
 
         [parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
         $SetupCredential,
 
         [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
         $Passphrase = $SetupCredential,
 
         [System.String]
@@ -35,6 +37,7 @@ function Get-TargetResource
         $SQLInstance = 'MSSQLSERVER',
 
         [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
         $dbUser,
 
         [System.String]
@@ -77,9 +80,11 @@ function Set-TargetResource
 
         [parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
         $SetupCredential,
 
         [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
         $Passphrase = $SetupCredential,
 
         [System.String]
@@ -89,6 +94,7 @@ function Set-TargetResource
         $SQLInstance = 'MSSQLSERVER',
 
         [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
         $dbUser,
 
         [System.String]
@@ -198,9 +204,11 @@ function Test-TargetResource
 
         [parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
         $SetupCredential,
 
         [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
         $Passphrase = $SetupCredential,
 
         [System.String]
@@ -210,6 +218,7 @@ function Test-TargetResource
         $SQLInstance = 'MSSQLSERVER',
 
         [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
         $dbUser,
 
         [System.String]
