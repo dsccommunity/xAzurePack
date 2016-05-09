@@ -59,7 +59,7 @@ function Set-TargetResource
     Write-Verbose "Path: $Path"
 
     $TempPath = [IO.Path]::GetTempPath().TrimEnd('\')
-    $buildversion = '3.32.8196.12' # Update Rollup 10 https://support.microsoft.com/en-gb/kb/3158609
+    $buildversion = '3.33.8196.14' # Update Rollup 10 https://support.microsoft.com/en-gb/kb/3158609
     $Products = (Get-WmiObject -Class Win32_Product | Where-Object {$_.version -eq $buildversion}).Name
     $Components = Get-WAPComponents -Role $Role
     foreach($Component in $Components)
@@ -121,7 +121,7 @@ function Test-TargetResource
     )
 
     $result = $true
-    $buildversion = '3.32.8196.12' # Update Rollup 10 https://support.microsoft.com/en-gb/kb/3158609
+    $buildversion = '3.33.8196.14' # Update Rollup 10 https://support.microsoft.com/en-gb/kb/3158609
     $Products = (Get-WmiObject -Class Win32_Product | Where-Object {$_.version -eq $buildversion}).Name
     $Components = Get-WAPComponents -Role $Role
     foreach($Component in $Components)
