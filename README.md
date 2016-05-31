@@ -217,6 +217,7 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 * Changed xAzurePackUpdate to use ProductName and ProductVersion instead of ProductID
 * Update to example to remove the need for community resources
 * Includes compatibility for Update Rollup 10
+* Removed the use of Win32_Product to scan for installed products
 
 ### 1.4.0.0
 * Includes compatibility for Update Rollup 9.1
