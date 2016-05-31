@@ -112,7 +112,8 @@ function Set-TargetResource
             Write-Verbose "Path: $Path"
 
             $TempPath = [IO.Path]::GetTempPath().TrimEnd('\')
-            $Products = (Get-WmiObject -Class Win32_Product).Name
+            $Products = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*,
+                                          HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {![string]::IsNullOrWhiteSpace($_.DisplayName)} | Sort-Object DisplayName -Unique).DisplayName
             $Components = Get-WAPComponents -Role $Role
             foreach($Component in $Components)
             {
@@ -230,7 +231,8 @@ function Test-TargetResource
         'Install'
         {
             $result = $true
-            $Products = (Get-WmiObject -Class Win32_Product).Name
+            $Products = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*,
+                                          HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {![string]::IsNullOrWhiteSpace($_.DisplayName)} | Sort-Object DisplayName -Unique).DisplayName
             $Components = Get-WAPComponents -Role $Role
             foreach($Component in $Components)
             {

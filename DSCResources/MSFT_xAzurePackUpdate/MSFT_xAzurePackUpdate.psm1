@@ -60,7 +60,8 @@ function Set-TargetResource
 
     $TempPath = [IO.Path]::GetTempPath().TrimEnd('\')
     $buildversion = '3.33.8196.14' # Update Rollup 10 https://support.microsoft.com/en-gb/kb/3158609
-    $Products = (Get-WmiObject -Class Win32_Product | Where-Object {$_.version -eq $buildversion}).Name
+    $Products = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*,
+                                  HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {![string]::IsNullOrWhiteSpace($_.DisplayName) -and $_.DisplayVersion -eq $buildversion} | Sort-Object DisplayName -Unique).DisplayName
     $Components = Get-WAPComponents -Role $Role
     foreach($Component in $Components)
     {
@@ -122,7 +123,8 @@ function Test-TargetResource
 
     $result = $true
     $buildversion = '3.33.8196.14' # Update Rollup 10 https://support.microsoft.com/en-gb/kb/3158609
-    $Products = (Get-WmiObject -Class Win32_Product | Where-Object {$_.version -eq $buildversion}).Name
+    $Products = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*,
+                                  HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {![string]::IsNullOrWhiteSpace($_.DisplayName) -and $_.DisplayVersion -eq $buildversion} | Sort-Object DisplayName -Unique).DisplayName
     $Components = Get-WAPComponents -Role $Role
     foreach($Component in $Components)
     {
