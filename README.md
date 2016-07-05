@@ -217,7 +217,6 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 
 ### Unreleased
 * Converted appveyor.yml to install Pester from PSGallery instead of from Chocolatey.
-* Updated appveyor.yml to use the default image.
 
 ### 1.4.0.0
 * Includes compatibility for Update Rollup 9.1
