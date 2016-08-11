@@ -1,3 +1,7 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
+param
+()
+
 $InstallerPassword   = ConvertTo-SecureString -String 'P@ssw0rd123!' -AsPlainText -Force
 $ServerAdminPassword = ConvertTo-SecureString -String 'P@ssw0rd123!' -AsPlainText -Force
 $WAPPassphrase       = ConvertTo-SecureString -String 'P@ssw0rd123!' -AsPlainText -Force
