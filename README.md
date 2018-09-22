@@ -6,7 +6,7 @@ The **xAzurePack** module contains resources for installation and configuration 
 
 This module includes 8 DSC resources that automate provisioning of resources in Microsoft Azure.
 
-*   **xAzurePackSetup**: for installation and initialization of Azure Pack 
+*   **xAzurePackSetup**: for installation and initialization of Azure Pack
 *   **xAzurePackUpdate**: for updating an Azure Pack installation
 *   **xAzurePackAdmin**: for adding Azure Pack admins
 *   **xAzurePackFQDN**: for setting the FQDN of Azure Pack roles
@@ -91,7 +91,7 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 
 ###xAzurePackDatabaseSetting
 
-*   **Namespace**: KEY - Specifies a namespace - "AdminSite" or "TenantSite" 
+*   **Namespace**: KEY - Specifies a namespace - "AdminSite" or "TenantSite"
 *   **Name**: KEY - Specifies the name of the setting.
 
 *   **Value**: REQUIRED - Specifies the value of the setting.
@@ -216,7 +216,10 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 ## Versions
 
 ### Unreleased
-* Converted appveyor.yml to install Pester from PSGallery instead of from Chocolatey.
+
+* Update appveyor.yml to use the default template.
+* Added default template files .codecov.yml, .gitattributes, and .gitignore, and
+  .vscode folder.
 
 ### 1.4.0.0
 * Includes compatibility for Update Rollup 9.1
@@ -228,12 +231,12 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 * Multiple minor fixes for split deployments
 
 ### 1.1.4.0
-* Update increased timeout for setup process to start to 60 seconds. 
+* Update increased timeout for setup process to start to 60 seconds.
 
 ### 1.0.0.0
 
-Initial release with the following resources 
-*   **xAzurePackSetup** 
+Initial release with the following resources
+*   **xAzurePackSetup**
 *   **xAzurePackAdmin**
 *   **xAzurePackFQDN**
 *   **xAzurePackDatabaseSetting**
