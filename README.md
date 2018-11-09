@@ -20,7 +20,7 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 
 ## Resources
 
-###xAzurePackSetup
+### xAzurePackSetup
 
 *   **Role**: KEY - The Azure Pack role to be installed or initialized.
 Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site".
@@ -46,7 +46,7 @@ If omitted, the password for SetupCredential is used.
 *   **EnableCeip**: Enable Customer Experience Improvement Program.
 
 
-###xAzurePackUpdate
+### xAzurePackUpdate
 
 *   **Role**: KEY - The Azure Pack role to be updated.
 Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extension","MySQL Extension","Admin Site","Admin Authentication Site","Tenant Site","Tenant Authentication Site".
@@ -58,7 +58,7 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 *   **SetupCredential**: REQUIRED - Credential to be used to perform the installation.
 
 
-###xAzurePackAdmin
+### xAzurePackAdmin
 
 *   **Ensure**: An enumerated value that describes if the principal is an Azure Pack admin.
 
@@ -73,7 +73,7 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 *   **dbuser**: SQL user used to create the database. <new>
 
 
-###xAzurePackFQDN
+### xAzurePackFQDN
 
 *   **Namespace**: KEY - Specifies a namespace - "AdminSite", "AuthSite", "TenantSite", or "WindowsAuthSite".
 
@@ -89,7 +89,7 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 
 *   **dbuser**: SQL user used to create the database. <new>
 
-###xAzurePackDatabaseSetting
+### xAzurePackDatabaseSetting
 
 *   **Namespace**: KEY - Specifies a namespace - "AdminSite" or "TenantSite"
 *   **Name**: KEY - Specifies the name of the setting.
@@ -105,7 +105,7 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 *   **dbuser**: SQL user used to create the database. <new>
 
 
-###xAzurePackIdentityProvider
+### xAzurePackIdentityProvider
 
 *   **Target**: KEY - Specifies the target site - "Membership" or "Windows".
 
@@ -122,7 +122,7 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 *   **dbuser**: SQL user used to create the database. <new>
 
 
-###xAzurePackRelyingParty
+### xAzurePackRelyingParty
 
 *   **Target**: KEY - Specifies the target site - "Admin" or "Tenant".
 
@@ -139,7 +139,7 @@ Valid roles are "Admin API","Tenant API","Tenant Public API","SQL Server Extensi
 *   **dbuser**: SQL user used to create the database. <new>
 
 
-###xAzurePackResourceProvider
+### xAzurePackResourceProvider
 
 *   **AuthenticationSite**: REQUIRED - URL of the authentication site.
 
